@@ -1,14 +1,23 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-
+import Dashboard from "../views/Dashboard.vue"
+import Expediente from "../views/Expediente.vue"
+import IngresoEgreso from "../views/IngresoEgreso.vue"
+import Inventario from "../views/Inventario.vue"
+import Configuraciones from "../views/Configuraciones.vue"
+import Rrhh from "../views/Rrhh.vue"
+import Reporteria from "../views/Reporteria.vue"
+import Logout from "../views/Logout.vue"
+import Pacientes from "../views/Pacientes.vue"
+import Citas from "../views/Citas.vue"
+import Examenes from "../views/Examenes.vue"
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "home",
+    component: Dashboard,
   },
   {
     path: "/about",
@@ -19,6 +28,57 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
+  {
+    path:"/expediente",
+    name:"expediente",
+    component:Expediente
+  },
+  {
+    path:"/contabilidad",
+    name:"ingresoegreso",
+    component:IngresoEgreso
+  },
+  {
+    path:"/inventario",
+    name:"inventario",
+    component:Inventario
+  },
+  {
+    path:"/rrhh",
+    name:"rrhh",
+    component:Rrhh
+  },
+  {
+    path:"/reporteria",
+    name:"reporteria",
+    component:Reporteria
+  },
+  {
+    path:"/configuraciones",
+    name:"configuraciones",
+    component:Configuraciones
+  },
+  {
+    path:"/logout",
+    name:"logout",
+    component:Logout
+  },
+  {
+    path:"/citas",
+    name:"citas",
+    component:Citas
+  },
+  {
+    path:"/examenes",
+    name:"examenes",
+    component:Examenes
+  },
+  {
+    path:"/pacientes",
+    name:"pacientes",
+    component:Pacientes
+  },
+  
 ];
 
 const router = new VueRouter({
