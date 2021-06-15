@@ -1,0 +1,74 @@
+export class ExpedienteModel{
+    constructor(
+        nombrePaciente,
+        apellidoPaciente,
+        domicilioPaciente,
+        fechaNacimiento,
+        idGenero,
+        NoISSS,
+        LugarNacimiento,
+        telefonoDomicilio,
+        telefonoOficina,
+        correo,
+        responsableA,
+        idEstadoCivil,
+        conyugue,
+        nvoPaciente,
+        altura,
+        peso,
+        IdTipoPiel,
+        marcaNaci,
+        IdColorCabello,
+        ocupaLentes,
+        presentaDisc,
+        problemaAuditivo,
+        medicoGrl,
+        telefonoMedico,
+        dentistaFamilia,
+        direccionMedico,
+        IdHospital,
+        IdSeguro,
+        poliza,
+        ultimaVacuna,
+        alergias,
+        incapacidades
+    ){
+        this.nombrePaciente=nombrePaciente;
+        this.apellidoPaciente=apellidoPaciente;
+        this.domicilioPaciente=domicilioPaciente;
+        this.fechaNacimiento=fechaNacimiento;
+        this.idGenero=idGenero;
+        this.NoISSS=NoISSS;
+        this.LugarNacimiento=LugarNacimiento;
+        this.telefonoDomicilio=telefonoDomicilio;
+        this.telefonoOficina=telefonoOficina;
+        this.correo=correo;
+        this.responsableA=responsableA;
+        this.idEstadoCivil=idEstadoCivil;
+        this.conyugue=conyugue;
+        this.nvoPaciente=nvoPaciente;
+        this.altura=altura;
+        this.peso=peso;
+        this.IdTipoPiel=IdTipoPiel;
+        this.marcaNaci=marcaNaci;
+        this.IdColorCabello=IdColorCabello;
+        this.ocupaLentes=ocupaLentes;
+        this.presentaDisc=presentaDisc;
+        this.problemaAuditivo=problemaAuditivo;
+        this.medicoGrl=medicoGrl;
+        this.telefonoMedico=telefonoMedico;
+        this.dentistaFamilia=dentistaFamilia;
+        this.direccionMedico=direccionMedico;
+        this.IdHospital=IdHospital;
+        this.IdSeguro=IdSeguro;
+        this.poliza=poliza;
+        this.ultimaVacuna=ultimaVacuna;
+        this.alergias=alergias;
+        this.incapacidades=incapacidades;
+        
+
+
+    }
+    
+
+}
