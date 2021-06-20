@@ -1,5 +1,50 @@
 <template v-model="exp">
   <v-stepper v-model="e6" vertical>
+    <v-row justify="space-around">
+      <v-col cols="auto">
+        <v-dialog
+          transition="dialog-top-transition"
+          max-width="600"
+          v-model="vdialog"
+        >
+          <!-- <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="primary"
+            v-bind="attrs"
+            v-on="on"
+          >From the top</v-btn>
+        </template> -->
+          <template v-slot:default="dialog">
+            <v-card>
+              <v-toolbar color="primary" dark>Paciente</v-toolbar>
+              <v-card-text>
+                <div class="text-h2 pa-12">{{ message }}</div>
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn text @click="dialog.value = false">Cerrar</v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
+      </v-col>
+    </v-row>
+
+    <v-row justify="center">
+      <v-dialog v-model="spinner" persistent max-width="290">
+        <v-card>
+          <v-card-title class="text-h5"> Espere por favor </v-card-title>
+          <v-card-text>
+            <center>
+              <v-progress-circular
+                :size="50"
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+            </center>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <!--Informacion personal-->
     <v-stepper-step :complete="e6 > 1" step="1">
       Informacion personal
@@ -267,27 +312,8 @@
                 ></v-select>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="12" md="4">
-                <v-text-field
-                  v-model="exp.correo"
-                  :rules="emailRules"
-                  label="Correo"
-                  required
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" md="8">
-                <v-text-field
-                  v-model="exp.responsableA"
-                  label="Responsable A"
-                  required
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
+            
+            
 
             <v-row>
               <v-col cols="12" md="6">
@@ -540,6 +566,9 @@ export default {
       idGenero: "",
       idEstadoCivilL: "",
       idColorCabello: "",
+      vdialog: false,
+      message: "Esperando resultado...",
+      spinner: false,
     };
   },
   created() {
@@ -785,22 +814,28 @@ export default {
       this.exp.altura = parseFloat(this.exp.altura);
       this.exp.peso = parseFloat(this.exp.peso);
     },
-    guardar() {
+    async guardar() {
+      let me = this;
       this.parsearNumeros();
       this.guardarExpediente();
-      axios
-        .post("api/Expediente/Crear", JSON.stringify(this.exp), {
+      me.spinner = true;
+      var sol = await axios.post(
+        "api/Expediente/Crear",
+        JSON.stringify(this.exp),
+        {
           headers: {
             // Overwrite Axios's automatically set Content-Type
             "Content-Type": "application/json",
           },
-        })
-        .then(function (resp) {
-          console.log(resp.data);
-        })
-        .catch(function (x) {
-          console.log(x);
-        });
+        }
+      );
+      me.spinner = false;
+      if (sol.status == 200) {
+        me.message = sol.data.message;
+      } else {
+        me.message = sol.data.message;
+      }
+      me.vdialog = true;
     },
   },
 };
