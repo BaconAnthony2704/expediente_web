@@ -85,7 +85,7 @@
 
 <script>
   import axios from 'axios'
-  import Vue from 'vue'
+ //import Vue from 'vue'
 //import DatetimePicker from 'vuetify-datetime-picker'
 //Vue.use(DatetimePicker)
 
