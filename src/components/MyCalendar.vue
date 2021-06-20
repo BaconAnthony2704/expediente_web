@@ -49,6 +49,24 @@
       </v-btn>
     </v-sheet>
     <v-sheet height="600">
+      <!-- Boton -->
+<v-btn color="primary" dark class="mr-4" @click="dialog = true">Agendar cita</v-btn>
+
+<!-- Modal -->
+<v-dialog v-model="dialog" max-width="500">
+  <v-card>
+    <v-container>
+      <v-form @submit.prevent="addEvent">
+        <v-text-field v-model="name" type="text" label="Nombre del paciente"></v-text-field>
+        <v-text-field v-model="start" type="date" label="fecha de la cita"></v-text-field>
+        <v-text-field v-model="hora" type="time" label="hora de la cita"></v-text-field>
+        
+        <v-text-field v-model="color" type="color" label="color"></v-text-field>
+        <v-btn type="submit" color="primay" class="mr-4" @click.stop="dialog = false">Create Event</v-btn>
+      </v-form>
+    </v-container>
+  </v-card>
+</v-dialog>
       <v-calendar
         ref="calendar"
         v-model="value"
@@ -60,13 +78,20 @@
         :event-color="getEventColor"
         @change="getEvents"
       ></v-calendar>
+      
     </v-sheet>
   </div>
 </template>
 
 <script>
+  import axios from 'axios'
+  import Vue from 'vue'
+import DatetimePicker from 'vuetify-datetime-picker'
+Vue.use(DatetimePicker)
+
   export default {
     data: () => ({
+      hora: "",
       type: 'month',
       types: ['month', 'week', 'day', '4day'],
       mode: 'stack',
@@ -82,8 +107,10 @@
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+      dialog: false,
     }),
     methods: {
+      /*
       getEvents ({ start, end }) {
         const events = []
         const min = new Date(`${start.date}T00:00:00`)
@@ -105,6 +132,62 @@
           })
         }
         this.events = events
+      },*/
+      async addEvent(){
+        try {
+          if(this.name && this.start){
+            var respuesta=this.start.concat("T"+this.hora);
+            console.log(respuesta);
+            let post = {
+            nombrePaciente: this.name,
+            dateTime: respuesta
+            
+            };
+          await axios.post("api/citas", post).then((result) => {
+            console.log(result);
+            
+            });
+
+            this.getEvents();
+
+            this.name = null;
+            this.details = null;
+            this.start = null;
+            this.end = null;
+            this.color = '#1976D2';
+
+          }else{
+            console.log('Campos obligatorios');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      async getEvents(){
+       try {
+          let response = await axios.get("api/citas");
+          var respuesta = [];
+          const events = [];
+          respuesta=response.data;
+          console.log(response.data);
+
+          
+          respuesta.map(element => {
+            
+          events.push({
+          name: element.nombrePaciente,
+          start: element.dateTime,
+          end: element.dateTime,
+          color: this.colors[this.rnd(0, this.colors.length - 1)],
+          //timed: !allDay,
+          });  
+          });
+
+          this.events=events;
+          
+      } catch (error) {
+          console.log(error);
+          }
       },
       getEventColor (event) {
         return event.color
