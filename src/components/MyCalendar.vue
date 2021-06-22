@@ -143,7 +143,9 @@
       <v-calendar
         ref="calendar"
         v-model="value"
-        :weekdays="weekday"
+        :weekdays="[1, 2, 3, 4, 5, 6, 0]"
+        locale="es"
+        :short-weekdays="false"
         :type="type"
         :events="events"
         :event-overlap-mode="mode"

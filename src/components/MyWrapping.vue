@@ -41,7 +41,7 @@
 
         <v-card-text>
           <div class="font-weight-bold ml-8 mb-2">
-            Today
+            Ahora
           </div>
 
           <v-timeline
