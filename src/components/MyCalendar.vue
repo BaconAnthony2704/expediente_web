@@ -75,6 +75,71 @@
           </v-container>
         </v-card>
       </v-dialog>
+      <!--   esto agregue   !-->
+      <v-menu
+          v-model="selectedOpen"
+          :close-on-content-click="false"
+          :activator="selectedElement"
+          offset-x
+        >
+          <v-card
+            color="grey lighten-4"
+            min-width="350px"
+            flat
+          >
+            <v-toolbar
+              :color="selectedEvent.color"
+              dark
+            >
+              <v-btn icon @click="deleteEvent(selectedEvent)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+              
+              <v-spacer></v-spacer>
+            </v-toolbar>
+
+
+            <v-card-text>
+             
+              <v-form v-if="currentlyEditing !== selectedEvent.id">
+                {{selectedEvent.name}} - {{selectedEvent.start}}
+              </v-form>
+
+              <v-form v-else>
+
+                <v-text-field 
+                  type="text" v-model="selectedEvent.name"
+                  label="Editar Nombre">
+                </v-text-field>
+
+                <textarea-autosize
+                  v-model="selectedEvent.details"
+                  type="text"
+                  style="width: 100%"
+                  :min-height="100"
+                ></textarea-autosize>
+
+              </v-form>
+
+            </v-card-text>
+
+            
+            <v-card-actions>
+              <v-btn
+                text
+                color="secondary"
+                @click="selectedOpen = false"
+              >
+                Cancel
+              </v-btn>
+              
+
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+
+        <!-- hasta aqui es el menu de cada item!-->
       <v-calendar
         ref="calendar"
         v-model="value"
@@ -85,6 +150,9 @@
         :event-overlap-threshold="30"
         :event-color="getEventColor"
         @change="getEvents"
+        @click:event="showEvent"
+         @click:more="viewDay"
+          @click:date="viewDay"
       ></v-calendar>
     </v-sheet>
   </div>
@@ -111,6 +179,12 @@ export default {
     ],
     value: "",
     events: [],
+    //agregue esto
+      selectedEvent: {},
+      selectedElement: null,
+      selectedOpen: false,
+      details: null,
+      currentlyEditing: null,
     colors: [
       "blue",
       "indigo",
@@ -174,6 +248,8 @@ export default {
 
         respuesta.map((element) => {
           events.push({
+            //agregue esta parte del id para poder borrarlo
+            id: element.idCita,
             name: element.nombrePaciente,
             start: element.fechaIngreso,
             end: element.fechaIngreso,
@@ -183,10 +259,51 @@ export default {
         });
 
         this.events = events;
+        console.log("Prueba")
+        console.log(events);
       } catch (error) {
         console.log(error);
       }
     },
+    //agregar esto
+      editEvent(id){
+        this.currentlyEditing = id
+      },
+      async deleteEvent(ev){
+        try {
+          console.log("api/Cita/"+ev.id);
+          await axios.delete("api/Cita/"+ev.id).then((result) => {
+            console.log(result);
+            
+            }); 
+          this.selectedOpen = false;
+          this.getEvents();
+          
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      showEvent ({ nativeEvent, event }) {
+        const open = () => {
+          this.selectedEvent = event
+          this.selectedElement = nativeEvent.target
+          requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+        }
+
+        if (this.selectedOpen) {
+          this.selectedOpen = false
+          requestAnimationFrame(() => requestAnimationFrame(() => open()))
+        } else {
+          open()
+        }
+
+        nativeEvent.stopPropagation()
+      },
+      viewDay ({ date }) {
+        this.focus = date
+        this.type = 'day'
+      },
+      //hasta aqui
     getEventColor(event) {
       return event.color;
     },

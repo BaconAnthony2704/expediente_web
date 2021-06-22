@@ -4,7 +4,7 @@
       <v-card width="400">
         <v-img
           height="200px"
-          src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
+          src="https://res.cloudinary.com/dunsiuhtb/image/upload/b_rgb:272424,o_21/v1624334343/caqgaitbaxbaa4rvgtse.jpg"
         >
           <v-app-bar
             flat
@@ -13,7 +13,7 @@
             <v-app-bar-nav-icon color="white"></v-app-bar-nav-icon>
 
             <v-toolbar-title class="text-h6 white--text pl-0">
-              Messages
+              Citas Proximas.
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -30,11 +30,11 @@
             <v-avatar size="56">
               <img
                 alt="user"
-                src="https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+                src="https://res.cloudinary.com/dunsiuhtb/image/upload/v1624334090/ehkmgb7jgrscrfmgz0wp.png"
               >
             </v-avatar>
             <p class="ml-3">
-              John Doe
+              Clinica Medica
             </p>
           </v-card-title>
         </v-img>
@@ -56,9 +56,9 @@
             >
               <div>
                 <div class="font-weight-normal">
-                  <strong>{{ message.from }}</strong> @{{ message.time }}
+                  <strong>{{ message.nombrePaciente }}</strong> 
                 </div>
-                <div>{{ message.message }}</div>
+                <div>{{ message.fechaIngreso }}</div>
               </div>
             </v-timeline-item>
           </v-timeline>
@@ -69,28 +69,28 @@
 </template>
 
 <script>
+import axios from 'axios';
   export default {
     data: () => ({
-      messages: [
-        {
-          from: 'You',
-          message: `Sure, I'll see you later.`,
-          time: '10:42am',
-          color: 'deep-purple lighten-1',
-        },
-        {
-          from: 'John Doe',
-          message: 'Yeah, sure. Does 1:00pm work?',
-          time: '10:37am',
-          color: 'green',
-        },
-        {
-          from: 'You',
-          message: 'Did you still want to grab lunch today?',
-          time: '9:47am',
-          color: 'deep-purple lighten-1',
-        },
-      ],
-    }),
+      messages: [ ],
+    }),methods:{
+      async getcitas(){
+       try {
+          let response = await axios.get("api/Cita/ObtenerCita");
+          
+          this.messages=response.data;
+          console.log(response.data);
+
+          
+          
+      } catch (error) {
+          console.log(error);
+          }
+      },
+  },
+  created() {
+    this.getcitas();
+    
+    },
   }
 </script>
