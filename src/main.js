@@ -9,6 +9,7 @@ Vue.config.productionTip = false;
 //axios.defaults.baseURL="https://localhost:44370"
 //prod
 
+
 axios.defaults.baseURL="https://apiexpediente.herokuapp.com"
 new Vue({
   router,
