@@ -47,7 +47,7 @@
         <v-card>
           <v-container>
             <v-form @submit.prevent="addEvent">
-              <v-select v-model="idPaciente" :items="pacientes"> </v-select>
+              <v-select v-model="idPaciente" :items="pacientes" no-data-text="elija"> </v-select>
               <v-text-field
                 v-model="start"
                 type="date"
@@ -59,11 +59,7 @@
                 label="hora de la cita"
               ></v-text-field>
 
-              <v-text-field
-                v-model="color"
-                type="color"
-                label="color"
-              ></v-text-field>
+              
               <v-btn
                 type="submit"
                 color="primay"
@@ -219,25 +215,47 @@ export default {
           var respuesta = this.start.concat("T" + this.hora);
           console.log(respuesta);
           let post = {
-            idPaciente: this.idPaciente,
-            fechaIngreso: respuesta,
+            //idPaciente: this.idPaciente,
+            //fechaIngreso: respuesta,
+            nombrePaciente: this.idPaciente,
+            dateTime: respuesta,
           };
-          await axios.post("api/Cita/Crear", post).then((result) => {
+         // await axios.post("api/Cita/Crear", post).then((result) => {
+            await axios.post("https://localhost:44370/api/citas", post).then((result) => {
             console.log(result);
+            
           });
-
+          
           this.getEvents();
-
+          //adderrores
+          this.idPaciente= null;
           this.name = null;
           this.details = null;
           this.start = null;
+          this.hora = null;
           this.end = null;
           this.color = "#1976D2";
         } else {
+          //adderrores.
+          alert("Datos incompletos");
+          //
           console.log("Campos obligatorios");
+          
         }
       } catch (error) {
         console.log(error);
+        //adderrores
+        if(error.response){
+          alert("verifique la fecha no puede agendar una cita con fecha anterior a la del dia de ahora" );
+        }
+         this.idPaciente= null;
+          this.name = null;
+          this.details = null;
+          this.start = null;
+          this.hora = null;
+          this.end = null;
+          this.color = "#1976D2";
+          //hasta aqui
       }
     },
     async getEvents() {
