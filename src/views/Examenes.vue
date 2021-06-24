@@ -205,6 +205,9 @@ export default {
         me.idPaciente=null;
         me.idMedicoGrl=null;
         me.examenesSelect=null;
+      }else{
+        this.message="Error vuelva a intentarlo mas tarde";
+        this.vspinner=true;
       }
     },
     async getSolicitudExamenes() {
