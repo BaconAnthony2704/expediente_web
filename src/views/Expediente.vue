@@ -54,7 +54,7 @@
     <v-stepper-content step="1">
       <v-card color="grey lighten-1" class="mb-12" height="auto">
         <template>
-          <v-form v-model="valid">
+          <v-form v-model="valid" ref="valid1">
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
@@ -67,9 +67,10 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
+                    type="text"
                     v-model="exp.nombrePaciente"
                     :rules="nameRules"
-                    :counter="10"
+                    :counter="50"
                     label="Nombre"
                     required
                     outlined
@@ -90,7 +91,7 @@
                   <v-text-field
                     v-model="exp.apellidoPaciente"
                     :rules="nameRules"
-                    :counter="10"
+                    :counter="50"
                     label="Apellidos"
                     required
                     outlined
@@ -104,6 +105,8 @@
                     name="input-7-4"
                     label="Domicilio"
                     v-model="exp.domicilioPaciente"
+                    :rules="direccionRules"
+                    :counter="255"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -155,6 +158,9 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     v-model="exp.NoISSS"
+                    type="number"
+                    :rules="isssRules"
+                    :counter="9"
                     label="No. ISSS"
                     required
                     outlined
@@ -165,7 +171,7 @@
           </v-form>
         </template>
       </v-card>
-      <v-btn color="primary" @click="e6 = 2"> Continuar </v-btn>
+      <v-btn color="primary" @click="Validar1" > Continuar </v-btn>
       <v-btn text> Cancelar </v-btn>
     </v-stepper-content>
     <!--Informacion adicional -->
@@ -176,13 +182,15 @@
 
     <v-stepper-content step="2">
       <v-card color="grey lighten-1" class="mb-12" height="auto">
-        <v-form v-model="valid">
+        <v-form v-model="valid" ref="valid2">
           <v-container>
             <v-row>
               <v-col cols="12" md="4">
                 <v-text-field
                   v-model="exp.LugarNacimiento"
                   label="Lugar de nacimiento"
+                  :rules="nacimientoRules"
+                  :counter="100"
                   required
                   outlined
                 ></v-text-field>
@@ -192,7 +200,10 @@
               <v-col cols="12" md="4">
                 <v-text-field
                   v-model="exp.telefonoDomicilio"
+                  type="number"
                   label="Telefono domicilio"
+                  :rules="telefonoRules"
+                  :counter="8"
                   required
                   outlined
                 ></v-text-field>
@@ -203,6 +214,9 @@
                 <v-text-field
                   v-model="exp.telefonoOficina"
                   label="Telefono oficina"
+                  type="number"
+                  :rules="telefonoRules"
+                  :counter="8"
                   required
                   outlined
                 ></v-text-field>
@@ -213,6 +227,8 @@
                 <v-text-field
                   v-model="exp.correo"
                   label="Correo"
+                  :rules="emailRules"
+                  :counter="100"
                   required
                   outlined
                 ></v-text-field>
@@ -223,6 +239,8 @@
                 <v-text-field
                   v-model="exp.responsableA"
                   label="Responsable A"
+                  :rules="nameRules"
+                  :counter="50"
                   required
                   outlined
                 ></v-text-field>
@@ -253,13 +271,14 @@
       <v-btn text> Cancelar </v-btn>
     </v-stepper-content>
 
+    <!--Exploracion Fisica-->
     <v-stepper-step :complete="e6 > 3" step="3">
       Exploracion fisica
     </v-stepper-step>
 
     <v-stepper-content step="3">
       <v-card color="grey lighten-1" class="mb-12" height="auto">
-        <v-form v-model="valid">
+        <v-form v-model="valid" ref="valid3">
           <v-container>
             <v-row>
               <v-col cols="12" md="4">
@@ -267,6 +286,8 @@
                   v-model="exp.altura"
                   type="number"
                   label="Altura"
+                  :rules="alturaRules"
+                  :counter="4"
                   required
                   outlined
                 ></v-text-field>
@@ -276,7 +297,10 @@
               <v-col cols="12" md="4">
                 <v-text-field
                   v-model="exp.peso"
+                  type="number"
                   label="Peso"
+                  :rules="pesoRules"
+                  :counter="6"
                   required
                   outlined
                 ></v-text-field>
@@ -297,6 +321,8 @@
                 <v-text-field
                   v-model="exp.marcaNaci"
                   label="Marcas de nacimiento"
+                  :rules="marcaRules"
+                  :counter="50"
                   required
                   outlined
                 ></v-text-field>
@@ -349,13 +375,15 @@
     <v-stepper-step step="4"> Documentos </v-stepper-step>
     <v-stepper-content step="4">
       <v-card color="grey lighten-1" class="mb-12" height="auto">
-        <v-form v-model="valid">
+        <v-form v-model="valid" ref="valid4">
           <v-container>
             <v-row>
               <v-col cols="12" md="8">
                 <v-text-field
                   v-model="exp.medicoGrl"
                   label="Medico general"
+                  :rules="nameRules"
+                  :counter="50"
                   required
                   outlined
                 ></v-text-field>
@@ -366,6 +394,9 @@
                 <v-text-field
                   v-model="exp.telefonoMedico"
                   label="Telefono Medico"
+                  type="number"
+                  :rules="direccionRules"
+                  :counter="8"
                   required
                   outlined
                 ></v-text-field>
@@ -376,6 +407,8 @@
                 <v-text-field
                   v-model="exp.dentistaFamilia"
                   label="Nombre destinta"
+                  :rules="nameRules"
+                  :counter="50"
                   required
                   outlined
                 ></v-text-field>
@@ -388,6 +421,8 @@
                   name="input-7-4"
                   label="Domicilio del medico"
                   v-model="exp.direccionMedico"
+                  :rules="direccionRules"
+                  :counter="255"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -530,13 +565,42 @@ export default {
       lastname: "",
       exp: { ExpedienteModel },
       nameRules: [
-        (v) => !!v || "Name is required",
-        (v) => v.length <= 10 || "Name must be less than 10 characters",
+        (v) => !!v || "Campo Obligatorio",
+        (v) => /^[a-zA-Z ]+$/.test(v) || "No se Admited Numeros",
+        (v) => v.length <= 50 || "Debe ser menor de 50 caracteres",
+      ],
+      marcaRules: [
+        (v) => !!v || "Campo Obligatorio",
+        (v) => v.length <= 50 || "Debe ser menor de 50 caracteres",
+      ],
+      isssRules: [
+        (v) => !!v || "Campo Obligatorio",
+        (v) => v.length == 9 || "ISSS son 9 digitos",
+      ],
+      telefonoRules: [
+        (v) => !!v || "Campo Obligatorio",
+        (v) => v.length == 8 || "Telefono son 8 digitos",
+      ],
+      direccionRules: [
+        (v) => !!v || "La Direccion es Obligatoria",
+        (v) => v.length <= 255 || "Direccion debe ser menor a 255 caracteres",
+      ],
+      alturaRules: [
+        (v) => !!v || "La Altura es Obligatoria",
+        (v) => v.length <= 4 || "Altura debe ser 1.80 por ejemplo",
+      ],
+      pesoRules: [
+        (v) => !!v || "El Peso es Obligatoria",
+        (v) => v.length <= 6 || "El Peso debe ser 101.50 kg",
+      ],
+      nacimientoRules: [
+        (v) => !!v || "El Lugar de Nacimiento es Obligatoria",
+        (v) => v.length <= 100 || "Lugar de Nacimiento debe ser menor a 100 caracteres",
       ],
       email: "",
       emailRules: [
         (v) => !!v || "E-mail is required",
-        (v) => /.+@.+/.test(v) || "E-mail must be valid",
+        (v) => /.+@.+.com/.test(v) || "E-mail must be valid",
       ],
       date: new Date().toISOString().substr(0, 10),
       menu: false,
@@ -836,6 +900,26 @@ export default {
         me.message = sol.data.message;
       }
       me.vdialog = true;
+    },
+    Validar1(){
+      if(this.$refs.valid1.validate()){
+        return true;
+      }
+    },
+    Validar2(){
+      if(this.$refs.valid2.validate()){
+        return true;
+      }
+    },
+    Validar3(){
+      if(this.$refs.valid3.validate()){
+        return true;
+      }
+    },
+    Validar4(){
+      if(this.$refs.valid4.validate()){
+        return true;
+      }
     },
   },
 };
