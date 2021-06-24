@@ -738,6 +738,7 @@ export default {
     selectEstadoCivil() {
       let me = this;
       var estadoCArray = [];
+      
       axios
         .get(this.stringUrl + "ListarEstadoCivil")
         .then(function (resp) {
