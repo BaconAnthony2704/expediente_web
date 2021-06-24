@@ -215,13 +215,13 @@ export default {
           var respuesta = this.start.concat("T" + this.hora);
           console.log(respuesta);
           let post = {
-            //idPaciente: this.idPaciente,
-            //fechaIngreso: respuesta,
-            nombrePaciente: this.idPaciente,
-            dateTime: respuesta,
+            idPaciente: this.idPaciente,
+            fechaIngreso: respuesta,
+            //nombrePaciente: this.idPaciente,
+            //dateTime: respuesta,
           };
-         // await axios.post("api/Cita/Crear", post).then((result) => {
-            await axios.post("https://localhost:44370/api/citas", post).then((result) => {
+          await axios.post("api/Cita/Crear", post).then((result) => {
+           // await axios.post("https://localhost:44370/api/citas", post).then((result) => {
             console.log(result);
             
           });
