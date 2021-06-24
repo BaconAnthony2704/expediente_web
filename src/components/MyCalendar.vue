@@ -221,7 +221,7 @@ export default {
             dateTime: respuesta,
           };
          // await axios.post("api/Cita/Crear", post).then((result) => {
-            await axios.post("https://localhost:44370/api/citas", post).then((result) => {
+            await axios.post("api/citas", post).then((result) => {
             console.log(result);
             
           });
