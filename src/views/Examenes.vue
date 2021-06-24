@@ -55,6 +55,40 @@
       </v-dialog>
     </div>
 
+
+
+    <!--
+      aqui comensamos a mostrar el mensaje
+    -->
+    <v-dialog v-model="vdialog" persistent max-width="290">
+          <v-card>
+            <v-card-title class="text-h5"> Espere Guardando </v-card-title>
+            <v-card-text>
+              <center>
+                <v-progress-circular
+                  :size="50"
+                  color="primary"
+                  indeterminate
+                ></v-progress-circular>
+              </center>
+            </v-card-text>
+          </v-card>
+      </v-dialog>
+      <v-dialog v-model="vspinner" persistent max-width="400">
+          <v-card>
+            <v-card-title class="text-h5"> Guardado </v-card-title>
+            <v-card-text>
+              <div class="text-h4 pa-12">{{ message }}</div>
+            </v-card-text>
+            <v-card-action class="justify-end">
+              <v-btn @click="vspinner=false,getSolicitudExamenes()">Cerrar</v-btn>
+            </v-card-action>
+          </v-card>
+      </v-dialog>
+    <!--
+      Hasta aqui mostramos el mensaje
+    -->
+
     <template>
       <v-row justify="center">
         <v-dialog v-model="spinner" persistent max-width="290">
@@ -126,6 +160,9 @@ export default {
       examenes: [],
       examenesSelect: [],
       spinner: false,
+      vspinner: false,
+      vdialog: false,
+      message: "",
     };
   },
   components: {
@@ -176,9 +213,11 @@ export default {
     async getSolicitudExamenes() {
       let me = this;
       var examenesArray = [];
+      this.examenesSelect= [],
       this.spinner=true;
       var sol=await axios.get('api/SolicitudExamen');
       //console.log(sol.data)
+      this.listExamens=[];
       examenesArray=sol.data;
       examenesArray.map(function (x) {
             me.listExamens.push(x);
@@ -232,8 +271,8 @@ export default {
         });
     },
   },
-  async created() {
-    await this.getSolicitudExamenes();
+  created() {
+    this.getSolicitudExamenes();
     this.getPacientes();
     this.getDoctores();
     this.getExamenes();
