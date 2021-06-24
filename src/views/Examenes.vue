@@ -210,6 +210,7 @@ export default {
     async getSolicitudExamenes() {
       let me = this;
       var examenesArray = [];
+      this.examenesSelect= [],
       this.spinner=true;
       var sol=await axios.get('api/SolicitudExamen');
       //console.log(sol.data)
