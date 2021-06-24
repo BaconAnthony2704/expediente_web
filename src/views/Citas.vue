@@ -20,7 +20,7 @@ export default {
       return{
           headers: [
           {
-            text: 'nombre del Paciente',
+            text: 'Nombre del Paciente',
             align: 'start',
             sortable: false,
             value: 'nombrePaciente',

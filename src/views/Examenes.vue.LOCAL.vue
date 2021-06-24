@@ -55,40 +55,6 @@
       </v-dialog>
     </div>
 
-
-
-    <!--
-      aqui comensamos a mostrar el mensaje
-    -->
-    <v-dialog v-model="vdialog" persistent max-width="290">
-          <v-card>
-            <v-card-title class="text-h5"> Espere Guardando </v-card-title>
-            <v-card-text>
-              <center>
-                <v-progress-circular
-                  :size="50"
-                  color="primary"
-                  indeterminate
-                ></v-progress-circular>
-              </center>
-            </v-card-text>
-          </v-card>
-      </v-dialog>
-      <v-dialog v-model="vspinner" persistent max-width="400">
-          <v-card>
-            <v-card-title class="text-h5"> Guardado </v-card-title>
-            <v-card-text>
-              <div class="text-h4 pa-12">{{ message }}</div>
-            </v-card-text>
-            <v-card-action class="justify-end">
-              <v-btn @click="vspinner=false,getSolicitudExamenes()">Cerrar</v-btn>
-            </v-card-action>
-          </v-card>
-      </v-dialog>
-    <!--
-      Hasta aqui mostramos el mensaje
-    -->
-
     <template>
       <v-row justify="center">
         <v-dialog v-model="spinner" persistent max-width="290">
@@ -160,9 +126,6 @@ export default {
       examenes: [],
       examenesSelect: [],
       spinner: false,
-      vspinner: false,
-      vdialog: false,
-      message: "",
     };
   },
   components: {
@@ -172,24 +135,22 @@ export default {
     this.$emit("cambiarEstado");
   },
   methods: {
-    async guardarSolicitud() {
+    guardarSolicitud() {
       this.dialog = false;
       let listEx = [];
-      this.vdialog = true;
+
       console.log(this.idMedicoGrl);
       console.log(this.idPaciente);
       console.log(JSON.stringify(this.examenesSelect));
       let me = this;
-      
-      if (this.examenesSelect.length > 0) {
-        console.log("Puto te gusta la paloma")
+      if (me.examenesSelect.length > 0) {
         me.examenesSelect.map(function (x) {
           listEx.push({ idExamen: x });
         });
       }
-      
-      var respuesta= await axios.post("api/SolicitudExamen/Crear",
-          JSON.stringify({idPaciente: me.idPaciente,
+      axios
+        .post("api/SolicitudExamen/Crear", {
+          idPaciente: me.idPaciente,
           idMedicoGrl: me.idMedicoGrl,
           solicitudExamenes: listEx,
           
@@ -203,34 +164,14 @@ export default {
         .catch(function (err) {
           alert("Ha ocurrido un error intentelo mas tarde")
           console.log(err);
-
-          }),
-          {
-          headers: {
-            // Overwrite Axios's automatically set Content-Type
-            "Content-Type": "application/json",
-          },
         });
-      this.vdialog = false;
-      if(respuesta.status==200){
-        this.message="Guardado Correctamente";
-        this.vspinner=true;
-        me.idPaciente=null;
-        me.idMedicoGrl=null;
-        me.examenesSelect=null;
-      }else{
-        this.message="Error vuelva a intentarlo mas tarde";
-        this.vspinner=true;
-      }
     },
     async getSolicitudExamenes() {
       let me = this;
       var examenesArray = [];
-      this.examenesSelect= [],
       this.spinner=true;
       var sol=await axios.get('api/SolicitudExamen');
       //console.log(sol.data)
-      this.listExamens=[];
       examenesArray=sol.data;
       examenesArray.map(function (x) {
             me.listExamens.push(x);

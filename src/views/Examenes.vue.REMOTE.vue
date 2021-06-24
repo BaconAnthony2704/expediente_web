@@ -191,20 +191,7 @@ export default {
       var respuesta= await axios.post("api/SolicitudExamen/Crear",
           JSON.stringify({idPaciente: me.idPaciente,
           idMedicoGrl: me.idMedicoGrl,
-          solicitudExamenes: listEx,
-          
-        })
-        .then(function (resp) {
-          
-          this.getSolicitudExamenes();
-          alert("Examenes ingresados con exito")
-          console.log(resp.data);
-        })
-        .catch(function (err) {
-          alert("Ha ocurrido un error intentelo mas tarde")
-          console.log(err);
-
-          }),
+          solicitudExamenes: listEx,}),
           {
           headers: {
             // Overwrite Axios's automatically set Content-Type
