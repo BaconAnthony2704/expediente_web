@@ -171,11 +171,11 @@
           </v-form>
         </template>
       </v-card>
-      <v-btn color="primary" @click="Validar1" > Continuar </v-btn>
+      <v-btn color="primary" @click="e6=2" > Continuar </v-btn>
       <v-btn text> Cancelar </v-btn>
     </v-stepper-content>
+    
     <!--Informacion adicional -->
-
     <v-stepper-step :complete="e6 > 2" step="2">
       Informacion adicional
     </v-stepper-step>
@@ -267,7 +267,7 @@
           </v-container>
         </v-form>
       </v-card>
-      <v-btn color="primary" @click="e6 = 3"> Continuar </v-btn>
+      <v-btn color="primary" @click="Validar2"> Continuar </v-btn>
       <v-btn text> Cancelar </v-btn>
     </v-stepper-content>
 
@@ -902,12 +902,12 @@ export default {
       me.vdialog = true;
     },
     Validar1(){
-      if(this.$refs.valid1.validate()){
+      if(this.$refs.valid2.validate()){
         return true;
       }
     },
     Validar2(){
-      if(this.$refs.valid2.validate()){
+      if(this.$refs.Valid2.validate()){
         return true;
       }
     },
