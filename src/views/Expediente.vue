@@ -267,7 +267,7 @@
           </v-container>
         </v-form>
       </v-card>
-      <v-btn color="primary" @click="Validar2"> Continuar </v-btn>
+      <v-btn color="primary" @click="e6=3"> Continuar </v-btn>
       <v-btn text> Cancelar </v-btn>
     </v-stepper-content>
 
