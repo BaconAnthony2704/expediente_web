@@ -76,7 +76,7 @@ import axios from 'axios';
     }),methods:{
       async getcitas(){
        try {
-          let response = await axios.get("api/Cita/ObtenerCita");
+          let response = await axios.get("api/citasProximas");
           
           this.messages=response.data;
           console.log(response.data);
@@ -89,8 +89,14 @@ import axios from 'axios';
       },
   },
   created() {
-    this.getcitas();
     
+    this.getcitas();
+    this.actualizar();
     },
+    async actualizar(){
+      await setInterval(console.log("me ejecuto"), 3000);
+
+    }, 
+    
   }
 </script>

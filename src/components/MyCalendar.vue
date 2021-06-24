@@ -260,7 +260,7 @@ export default {
     },
     async getEvents() {
       try {
-        let response = await axios.get("api/Cita/Listar");
+        let response = await axios.get("api/citas");
         var respuesta = [];
         const events = [];
         respuesta = response.data;
