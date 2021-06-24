@@ -138,39 +138,40 @@ export default {
     async guardarSolicitud() {
       this.dialog = false;
       let listEx = [];
-
+      this.vdialog = true;
       console.log(this.idMedicoGrl);
       console.log(this.idPaciente);
       console.log(JSON.stringify(this.examenesSelect));
       let me = this;
-      if (me.examenesSelect.length > 0) {
+      
+      if (this.examenesSelect.length > 0) {
+        console.log("Puto te gusta la paloma")
         me.examenesSelect.map(function (x) {
           listEx.push({ idExamen: x });
         });
       }
-      var sol=await axios
-        .post("api/SolicitudExamen/Crear", {
-          idPaciente: me.idPaciente,
+      
+      var respuesta= await axios.post("api/SolicitudExamen/Crear",
+          JSON.stringify({idPaciente: me.idPaciente,
           idMedicoGrl: me.idMedicoGrl,
-          solicitudExamenes: listEx,
-          
+          solicitudExamenes: listEx,}),
+          {
+          headers: {
+            // Overwrite Axios's automatically set Content-Type
+            "Content-Type": "application/json",
+          },
         });
-        if(sol.status==200){
-          alert("Examenes ingresados con exito")
-          await this.getSolicitudExamenes();
-        }else{
-          alert("Ha ocurrido un error intentelo mas tarde")
-        }
-        // .then(function (resp) {
-          
-        //   this.getSolicitudExamenes();
-        //   alert("Examenes ingresados con exito")
-        //   console.log(resp.data);
-        // })
-        // .catch(function (err) {
-        //   alert("Ha ocurrido un error intentelo mas tarde")
-        //   console.log(err);
-        // });
+      this.vdialog = false;
+      if(respuesta.status==200){
+        this.message="Guardado Correctamente";
+        this.vspinner=true;
+        me.idPaciente=null;
+        me.idMedicoGrl=null;
+        me.examenesSelect=null;
+      }else{
+        this.message="Error vuelva a intentarlo mas tarde";
+        this.vspinner=true;
+      }
     },
     async getSolicitudExamenes() {
       let me = this;
