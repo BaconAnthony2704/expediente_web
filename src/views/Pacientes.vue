@@ -243,6 +243,17 @@
             </v-card-text>
           </v-card>
         </v-dialog>
+      <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">Esta seguro de eliminar el paciente?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <div>
           <v-data-table
     :headers="dessertHeaders"
@@ -448,7 +459,7 @@ export default {
         this.dialog = true
       },
       deleteItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        //this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
@@ -564,6 +575,26 @@ export default {
     cerrar(){
       this.dialog = false;
       location.reload();
+    },
+    deleteItemConfirm () {
+        //this.desserts.splice(this.editedIndex, 1)
+        this.closeDelete()
+      },
+    async closeDelete () {
+        this.dialogDelete = false
+        var sol = await axios.put(
+          "api/Expediente/Eliminar/"+this.editedItem.idExpediente,
+          
+        );
+        if(sol.status==200){
+          console.log(sol.data.message);
+          this.message = sol.data.message;
+          this.dialog=false;
+        }
+        this.vdialog = true;
+        
+        
+        
     },
     async update () {
         if (this.editedIndex > -1) {
