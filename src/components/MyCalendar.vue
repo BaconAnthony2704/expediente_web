@@ -47,7 +47,7 @@
         <v-card>
           <v-container>
             <v-form @submit.prevent="addEvent">
-              <v-select v-model="idPaciente" :items="pacientes" no-data-text="elija"> </v-select>
+              <v-select v-model="idPaciente" :items="pacientes" no-data-text="elija" > </v-select>
               <v-text-field
                 v-model="start"
                 type="date"
@@ -103,18 +103,19 @@
               </v-form>
 
               <v-form v-else>
+                <v-select v-model="idPaciente" :items="pacientes" no-data-text="elija" > </v-select>
+                
+                <v-text-field
+                v-model="start"
+                type="date"
+                label="fecha de la cita"
+              ></v-text-field>
+              <v-text-field
+                v-model="hora"
+                type="time"
+                label="hora de la cita"
+              ></v-text-field>
 
-                <v-text-field 
-                  type="text" v-model="selectedEvent.name"
-                  label="Editar Nombre">
-                </v-text-field>
-
-                <textarea-autosize
-                  v-model="selectedEvent.details"
-                  type="text"
-                  style="width: 100%"
-                  :min-height="100"
-                ></textarea-autosize>
 
               </v-form>
 
@@ -123,11 +124,34 @@
             
             <v-card-actions>
               <v-btn
+                v-if="currentlyEditing !== selectedEvent.id"
                 text
                 color="secondary"
                 @click="selectedOpen = false"
               >
                 Cancel
+              </v-btn>
+              <v-btn
+                v-else
+                text
+                color="secondary"
+                @click="currentlyEditing = null"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                v-if="currentlyEditing !== selectedEvent.id"
+                text
+                color="secondary"
+                @click="editEvent(selectedEvent.id)"
+              >
+                Editar
+              </v-btn>
+
+              <v-btn 
+              text 
+              v-else @click.prevent="updateEvent(selectedEvent)">
+              Save
               </v-btn>
               
 
@@ -221,6 +245,56 @@ export default {
             //dateTime: respuesta,
           };
           await axios.post("api/Cita/Crear", post).then((result) => {
+           // await axios.post("https://localhost:44370/api/citas", post).then((result) => {
+            console.log(result);
+            
+          });
+          
+          this.getEvents();
+          //adderrores
+          this.idPaciente= null;
+          this.name = null;
+          this.details = null;
+          this.start = null;
+          this.hora = null;
+          this.end = null;
+          this.color = "#1976D2";
+        } else {
+          //adderrores.
+          alert("Datos incompletos");
+          //
+          console.log("Campos obligatorios");
+          
+        }
+      } catch (error) {
+        console.log(error);
+        //adderrores
+        if(error.response){
+          alert("verifique la fecha no puede agendar una cita con fecha anterior a la del dia de ahora" );
+        }
+         this.idPaciente= null;
+          this.name = null;
+          this.details = null;
+          this.start = null;
+          this.hora = null;
+          this.end = null;
+          this.color = "#1976D2";
+          //hasta aqui
+      }
+    },
+    async updateEvent(ev) {
+      try {
+        if (this.idPaciente && this.start) {
+          var respuesta = this.start.concat("T" + this.hora);
+          console.log(respuesta);
+          let post = {
+            id: ev.id,
+            idPaciente: this.idPaciente,
+            fechaIngreso: respuesta,
+            //nombrePaciente: this.idPaciente,
+            //dateTime: respuesta,
+          };
+          await axios.put("api/Citas", post).then((result) => {
            // await axios.post("https://localhost:44370/api/citas", post).then((result) => {
             console.log(result);
             
