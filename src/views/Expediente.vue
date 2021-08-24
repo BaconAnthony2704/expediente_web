@@ -84,6 +84,9 @@
                     max-width="250"
                     src="https://picsum.photos/id/11/500/300"
                   ></v-img>
+                  <template>
+                    <input type="file" @change="processFile($event)" />
+                  </template>
                 </v-col>
               </v-row>
               <v-row>
@@ -171,10 +174,10 @@
           </v-form>
         </template>
       </v-card>
-      <v-btn color="primary" @click="e6=2" > Continuar </v-btn>
+      <v-btn color="primary" @click="e6 = 2"> Continuar </v-btn>
       <v-btn text> Cancelar </v-btn>
     </v-stepper-content>
-    
+
     <!--Informacion adicional -->
     <v-stepper-step :complete="e6 > 2" step="2">
       Informacion adicional
@@ -267,7 +270,7 @@
           </v-container>
         </v-form>
       </v-card>
-      <v-btn color="primary" @click="e6=3"> Continuar </v-btn>
+      <v-btn color="primary" @click="e6 = 3"> Continuar </v-btn>
       <v-btn text> Cancelar </v-btn>
     </v-stepper-content>
 
@@ -338,8 +341,6 @@
                 ></v-select>
               </v-col>
             </v-row>
-            
-            
 
             <v-row>
               <v-col cols="12" md="6">
@@ -558,6 +559,8 @@ import ExpedienteModel from "../models/expediente";
 export default {
   data() {
     return {
+      imagen:[],
+      
       stringUrl: "api/ComboBox/",
       e6: 1,
       valid: false,
@@ -595,7 +598,9 @@ export default {
       ],
       nacimientoRules: [
         (v) => !!v || "El Lugar de Nacimiento es Obligatoria",
-        (v) => v.length <= 100 || "Lugar de Nacimiento debe ser menor a 100 caracteres",
+        (v) =>
+          v.length <= 100 ||
+          "Lugar de Nacimiento debe ser menor a 100 caracteres",
       ],
       email: "",
       emailRules: [
@@ -660,6 +665,25 @@ export default {
     },
   },
   methods: {
+    processFile(event){
+      this.imagen=event.target.files[0];
+      console.log(this.imagen);
+    },
+    async GuardarImagen(){
+      let formData=new FormData();
+      formData.append("file",this.imagen);
+      formData.append("upload_preset",this.$presetCloudinary);
+
+      await fetch(this.$cloudinaryURL,{
+        method:"POST",
+        body:formData
+      }).then(response=>response.json())
+      .then((data)=>{
+        this.exp.UrlImagen= data.url;
+        console.log(this.exp.UrlImagen);
+      })
+      .catch(error=>console.log("Ocurrio un error, ",error));
+    },
     mostrarObj() {
       this.obtenerFecha(this.date);
       this.obtenerFechaVacunacion(this.date);
@@ -738,6 +762,7 @@ export default {
     selectEstadoCivil() {
       let me = this;
       var estadoCArray = [];
+
       axios
         .get(this.stringUrl + "ListarEstadoCivil")
         .then(function (resp) {
@@ -880,9 +905,12 @@ export default {
     },
     async guardar() {
       let me = this;
+      await this.GuardarImagen();
+
       this.parsearNumeros();
       this.guardarExpediente();
       me.spinner = true;
+      console.log(this.exp);
       var sol = await axios.post(
         "api/Expediente/Crear",
         JSON.stringify(this.exp),
@@ -901,23 +929,23 @@ export default {
       }
       me.vdialog = true;
     },
-    Validar1(){
-      if(this.$refs.valid2.validate()){
+    Validar1() {
+      if (this.$refs.valid2.validate()) {
         return true;
       }
     },
-    Validar2(){
-      if(this.$refs.Valid2.validate()){
+    Validar2() {
+      if (this.$refs.Valid2.validate()) {
         return true;
       }
     },
-    Validar3(){
-      if(this.$refs.valid3.validate()){
+    Validar3() {
+      if (this.$refs.valid3.validate()) {
         return true;
       }
     },
-    Validar4(){
-      if(this.$refs.valid4.validate()){
+    Validar4() {
+      if (this.$refs.valid4.validate()) {
         return true;
       }
     },

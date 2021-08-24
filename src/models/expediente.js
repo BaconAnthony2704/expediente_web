@@ -31,7 +31,8 @@ export class ExpedienteModel{
         poliza,
         ultimaVacuna,
         alergias,
-        incapacidades
+        incapacidades,
+        UrlImagen,
     ){
         this.nombrePaciente=nombrePaciente;
         this.apellidoPaciente=apellidoPaciente;
@@ -65,6 +66,7 @@ export class ExpedienteModel{
         this.ultimaVacuna=ultimaVacuna;
         this.alergias=alergias;
         this.incapacidades=incapacidades;
+        this.UrlImagen=UrlImagen;
         
 
 
