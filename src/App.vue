@@ -65,6 +65,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item :to="{ name: 'historiaClinica' }">
+          <v-list-item-action>
+            <v-icon>mdi-file-chart</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title> Historia Clinica </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item :to="{ name: 'configuraciones' }">
           <v-list-item-action>
             <v-icon>mdi-tune-vertical</v-icon>

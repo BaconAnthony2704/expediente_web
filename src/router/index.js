@@ -11,6 +11,7 @@ import Logout from "../views/Logout.vue"
 import Pacientes from "../views/Pacientes.vue"
 import Citas from "../views/Citas.vue"
 import Examenes from "../views/Examenes.vue"
+import HistoriaClinica from "../views/HistoriaClinica.vue"
 Vue.use(VueRouter);
 
 const routes = [
@@ -77,6 +78,11 @@ const routes = [
     path:"/pacientes",
     name:"pacientes",
     component:Pacientes
+  },
+  {
+    path:"/historiaClinica",
+    name:"historiaClinica",
+    component:HistoriaClinica
   },
   
 ];
