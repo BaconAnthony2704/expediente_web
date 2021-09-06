@@ -82,7 +82,7 @@ export default {
                localStorage.setItem('user',userInfo.user.username)
                localStorage.setItem('idtoken',md5(userInfo.user.username))
                router.push({name:'dashboard',params:{userId:userInfo.user.username} })
-               location.reload();
+               //location.reload();
             }
             
             
