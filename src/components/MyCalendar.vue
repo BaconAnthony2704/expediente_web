@@ -65,7 +65,7 @@
                 color="primay"
                 class="mr-4"
                 @click.stop="dialog = false"
-                >Create Event</v-btn
+                >Guardar</v-btn
               >
             </v-form>
           </v-container>
