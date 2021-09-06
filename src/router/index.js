@@ -14,7 +14,7 @@ import Citas from "../views/Citas.vue"
 import Examenes from "../views/Examenes.vue"
 import HistoriaClinica from "../views/HistoriaClinica.vue"
 import Login from "../components/Login.vue"
-//import md5 from "js-md5"
+import md5 from "js-md5"
 
 Vue.use(VueRouter);
 const routes = [
@@ -116,7 +116,9 @@ router.beforeEach((to, from, next) => {
   if (authRequired && !loggedIn  && !logSession) {
     return next('/login')
   }
-  
+  else if(authRequired && md5(loggedIn)!=logSession){
+    return next('/login')
+  }
   next()
 })
 export default router;
