@@ -1,4 +1,17 @@
 {
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/base"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
   "name": "expediente",
   "version": "0.1.0",
   "private": true,

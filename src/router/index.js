@@ -4,6 +4,9 @@ import Home from "../views/Home.vue"
 import Dashboard from "../views/Dashboard.vue"
 import Expediente from "../views/Expediente.vue"
 import IngresoEgreso from "../views/IngresoEgreso.vue"
+import ingreso from "../views/ingreso.vue"
+import egreso from "../views/egreso.vue"
+import historialTransaccion from "../views/historialTransaccion.vue"
 import Inventario from "../views/Inventario.vue"
 import Configuraciones from "../views/Configuraciones.vue"
 import Rrhh from "../views/Rrhh.vue"
@@ -26,6 +29,21 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login,
+  },
+  {
+    path: "/ingreso",
+    name: "ingreso",
+    component: ingreso,
+  },
+  {
+    path: "/egreso",
+    name: "egreso",
+    component: egreso,
+  },
+  {
+    path: "/historialIngresoEgreso",
+    name: "historialIngresoEgreso",
+    component: historialTransaccion,
   },
   {
     path: "/about",
