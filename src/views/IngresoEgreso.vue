@@ -1,12 +1,7 @@
 <template>
   <div>
-    <v-file-input
-    accept=".xls,.xlsx"
-    label="File input"
-    v-on:change="fileToJson($event)"
-    v-model="archivo">
-    </v-file-input>
-    <input type="file" name="xlfile" id="xlf" v-on:change="fileToJson($event)" />
+    
+    <input type="file" accept=".xls,.xlsx" name="xlfile" id="xlf" v-on:change="fileToJson($event)" />
   </div>
 </template>
 
