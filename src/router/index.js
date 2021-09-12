@@ -14,6 +14,8 @@ import Citas from "../views/Citas.vue"
 import Examenes from "../views/Examenes.vue"
 import HistoriaClinica from "../views/HistoriaClinica.vue"
 import Login from "../components/Login.vue"
+import MenuUsuarios from "../views/MenuUsuarios.vue"
+import MenuExportar from "../views/MenuExportar.vue"
 import md5 from "js-md5"
 
 Vue.use(VueRouter);
@@ -26,6 +28,16 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login,
+  },
+  {
+    path: "/mantenimiento_usuarios",
+    name: "menuUsuarios",
+    component: MenuUsuarios,
+  },
+  {
+    path: "/exportar_cuentas",
+    name: "menuExportar",
+    component: MenuExportar,
   },
   {
     path: "/about",
@@ -93,7 +105,7 @@ const routes = [
   },
   {
     path:"/home",
-    name:"home",
+    name: "Home",
     component:Home
   },
   {
