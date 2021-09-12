@@ -13,6 +13,8 @@ export class DetalleMovimientoModel{
         tipo,
         relacion,
         idPaciente,
+        idConcepto,
+        descripcionConcepto,
     ){
         this.idDetalleMovimiento=idDetalleMovimiento;
         this.fechaIngreso=fechaIngreso;
@@ -27,6 +29,8 @@ export class DetalleMovimientoModel{
         this.tipo=tipo;
         this.relacion=relacion;
         this.idPaciente=idPaciente;
+        this.idConcepto=idConcepto;
+        this.descripcionConcepto=descripcionConcepto;
 
     }
 }
