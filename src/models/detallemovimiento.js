@@ -1,0 +1,32 @@
+export class DetalleMovimientoModel{
+    constructor(
+        idDetalleMovimiento,
+        fechaIngreso,
+        documento,
+        monto,
+        isr,
+        observacion,
+        paciente,
+        codigo,
+        descripcion,
+        nivel,
+        tipo,
+        relacion,
+        idPaciente,
+    ){
+        this.idDetalleMovimiento=idDetalleMovimiento;
+        this.fechaIngreso=fechaIngreso;
+        this.documento=documento;
+        this.monto=monto;
+        this.isr=isr;
+        this.observacion=observacion;
+        this.paciente=paciente;
+        this.codigo=codigo;
+        this.descripcion=descripcion;
+        this.nivel=nivel;
+        this.tipo=tipo;
+        this.relacion=relacion;
+        this.idPaciente=idPaciente;
+
+    }
+}
