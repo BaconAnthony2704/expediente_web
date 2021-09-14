@@ -21,7 +21,8 @@
 import XLSX from 'xlsx';
 //import Home from './Home.vue';
 //import { readExcel } from '../components/importarExcel'
-
+import axios from 'axios'
+import router from '../router';
     export default {
   //components: { Home },
       
@@ -71,8 +72,12 @@ import XLSX from 'xlsx';
 llenarTabla(d){
     this.dataJson=d
 },
-guardarData(){
-  console.log("subiendo data")
+async guardarData(){
+  var resp=await axios.post("api/Login/CrearToJson",this.dataJson);
+  if(resp.status==200){
+    console.log(resp.data);
+    router.push("/mantenimiento_usuario")
+  }
 }
     },
       }
