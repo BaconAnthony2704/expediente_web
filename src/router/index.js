@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import Home from "../views/Home.vue"
 import Dashboard from "../views/Dashboard.vue"
 import Expediente from "../views/Expediente.vue"
 import IngresoEgreso from "../views/IngresoEgreso.vue"
@@ -12,13 +13,37 @@ import Pacientes from "../views/Pacientes.vue"
 import Citas from "../views/Citas.vue"
 import Examenes from "../views/Examenes.vue"
 import HistoriaClinica from "../views/HistoriaClinica.vue"
-Vue.use(VueRouter);
+import Login from "../components/Login.vue"
+import MenuUsuarios from "../views/MenuUsuarios.vue"
+import ExportarUsuarios from "../views/ExportarUsuarios"
+import ExportarCuentas from "../views/MenuExportar.vue"
+import md5 from "js-md5"
 
+Vue.use(VueRouter);
 const routes = [
   {
-    path: "/",
-    name: "home",
-    component: Dashboard,
+    path: '/',
+    redirect: '/login'
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: Login,
+  },
+  {
+    path: "/mantenimiento_usuario",
+    name: "menuUsuarios",
+    component: MenuUsuarios,
+  },
+  {
+    path: "/exportar_cuentas",
+    name: "menuExportar",
+    component: ExportarCuentas,
+  },
+  {
+    path: "/exportar_usuario",
+    name: "ExportarUsuario",
+    component: ExportarUsuarios,
   },
   {
     path: "/about",
@@ -84,11 +109,34 @@ const routes = [
     name:"historiaClinica",
     component:HistoriaClinica
   },
+  {
+    path:"/home",
+    name: "Home",
+    component:Home
+  },
+  {
+    path:"/dashboard",
+    name:"dashboard",
+    component:Dashboard
+  },
   
 ];
 
 const router = new VueRouter({
   routes,
 });
-
+router.beforeEach((to, from, next) => {
+  // redirigir a la página de inicio de sesión si no ha iniciado sesión y está intentando acceder a una página restringida
+  const publicPages = ['/login']
+  const authRequired = !publicPages.includes(to.path)
+  const loggedIn = localStorage.getItem('user')
+  const logSession=localStorage.getItem('idtoken')
+  if (authRequired && !loggedIn  && !logSession) {
+    return next('/login')
+  }
+  else if(authRequired && md5(loggedIn)!=logSession){
+    return next('/login')
+  }
+  next()
+})
 export default router;

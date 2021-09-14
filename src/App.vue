@@ -1,10 +1,12 @@
+
 <template>
-  <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app>
+  <v-app id="app">
+    <template v-if="!$route.path.includes('login')">
+      <v-navigation-drawer v-model="drawer" app>
       <!--  -->
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="text-h6"> Usuario </v-list-item-title>
+          <v-list-item-title class="text-h6"> {{username}} </v-list-item-title>
           <v-list-item-subtitle> Nombre </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -12,7 +14,7 @@
       <v-divider></v-divider>
 
       <v-list dense nav>
-        <v-list-item :to="{ name: 'home' }">
+        <v-list-item :to="{ name: 'dashboard' }">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
@@ -83,7 +85,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item :to="{ name: 'logout' }">
+        <v-list-item @click.prevent="salir">
           <v-list-item-action>
             <v-icon>mdi-logout</v-icon>
           </v-list-item-action>
@@ -99,19 +101,45 @@
 
       <v-toolbar-title>Sistema de expediente clinico</v-toolbar-title>
     </v-app-bar>
+    
 
+      
+    </template>
     <v-main>
-      <!--  -->
-      <router-view />
-    </v-main>
+         <keep-alive :include="['Login']">
+            <router-view></router-view>
+         </keep-alive>
+      </v-main>
   </v-app>
 </template>
 
 <script>
+import router from '../src/router/index'
 export default {
-  data: () => ({
-    drawer: null,
-  }),
-  components: {},
+   data: () => ({
+      drawer: null,
+      username:"",
+     
+   }),
+   props: {
+      source: String,
+   },
+   methods: {
+      obtenerUsuario(){
+         
+         this.username="";
+         this.username=localStorage.getItem('user');
+      },
+      salir(){
+         alert("Saliendo de la sesion");
+         localStorage.clear();
+         router.push('/login');
+         
+      }
+   },
+   created() {
+      this.obtenerUsuario();
+   },
 };
 </script>
+
