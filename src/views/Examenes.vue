@@ -1,13 +1,14 @@
 <template>
   <v-card class="mx-auto" max-width="auto" tile>
-    <div class="text-center">
-      <v-dialog v-model="dialog" width="500">
+    <div class="text-center" >
+      <v-dialog width="700" >
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on">
-            Ingresar examen
+            Ingresar Examen
           </v-btn>
         </template>
 
+        <template v-slot:default="dialog">
         <v-card>
           <v-card-title class="text-h5 grey lighten-2">
             Ingresar examen del nuevo paciente
@@ -31,12 +32,57 @@
           </v-simple-table>
           <v-container>
             <v-row>
-              <v-col cols="12" md="12" v-for="exa in examenes" :key="exa">
+              <v-col sm="5">Hematologia e Inmunohematologia <br><br>
                 <v-checkbox
+                  v-for="exa in examenes1" :key="exa"
                   v-model="examenesSelect"
                   :label="`${exa.text}`"
                   :value="exa.value"
                   @change="checkIncapacidad($event)"
+                  class="mt-n2 mx-auto"
+                >
+                </v-checkbox>
+              </v-col>
+              <v-col sm="2"></v-col>
+              <v-col sm="5">Anemias<br><br>
+                <v-checkbox
+                  v-for="exa in examenes2" :key="exa"
+                  v-model="examenesSelect"
+                  :label="`${exa.text}`"
+                  :value="exa.value"
+                  @change="checkIncapacidad($event)"
+                  class="mt-n2 mx-auto"
+                >
+                </v-checkbox>
+              </v-col>
+            </v-row>
+            <v-divider></v-divider>
+            <v-divider></v-divider>
+            <v-divider></v-divider>
+            <v-divider></v-divider>
+            <v-divider></v-divider>
+            <v-divider></v-divider><br>
+            <v-row>
+              <v-col sm="5">Coagulacion<br><br>
+                <v-checkbox
+                  v-for="exa in examenes3" :key="exa"
+                  v-model="examenesSelect"
+                  :label="`${exa.text}`"
+                  :value="exa.value"
+                  @change="checkIncapacidad($event)"
+                  class="mt-n2 mx-auto"
+                >
+                </v-checkbox>
+              </v-col>
+              <v-col sm="2"></v-col>
+              <v-col sm="5">Fibrinolisis e Hipercoagulacion<br><br>
+                <v-checkbox
+                  v-for="exa in examenes4" :key="exa"
+                  v-model="examenesSelect"
+                  :label="`${exa.text}`"
+                  :value="exa.value"
+                  @change="checkIncapacidad($event)"
+                  class="mt-n2 mx-auto"
                 >
                 </v-checkbox>
               </v-col>
@@ -47,15 +93,129 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="guardarSolicitud()">
+            <v-btn color="primary" text @click="guardarSolicitud(),dialog.value=false">
               Guardar
             </v-btn>
           </v-card-actions>
         </v-card>
+        </template>
+      </v-dialog>
+
+
+      <v-dialog width="400">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="blue lighten-2" class="ma-6" dark v-bind="attrs" v-on="on">
+            Agregar Nuevo Tipo Examen
+          </v-btn>
+        </template>
+
+        <template v-slot:default="dialog">
+        <v-card>
+          <v-card-title class="text-h5 grey lighten-2">
+            Ingresar Nuevo Tipo Examen
+          </v-card-title>
+          <v-container>
+            <v-text-field
+              v-model="nombreExamen"
+              label="Nombre del Examen"
+              :rules="rules"
+            >
+            </v-text-field>
+            <v-text-field
+              v-model="tipoExamen"
+              label="Tipo de Examen"
+              :rules="rules"
+            >
+            </v-text-field>
+          </v-container>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="guardarExamen(),dialog.value=false">
+              Guardar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+        </template>
+      </v-dialog>
+
+
+      <v-dialog width="700">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="red lighten-2" class="ma-3" dark v-bind="attrs" v-on="on" @click="getExamenes()">
+            Eliminar Tipo Examen
+          </v-btn>
+        </template>
+
+        <template v-slot:default="dialog">
+        <v-card>
+          <v-card-title class="text-h5 grey lighten-2">
+            Eliminar Nuevo Tipo Examen
+          </v-card-title>
+          <v-container>
+ 
+        <v-data-table
+          :headers="header"
+          :items="desserts"
+          sort-by="calories"
+          class="elevation-1"
+        >
+      <template v-slot:top>
+      <v-toolbar
+        flat
+      >
+        <v-toolbar-title>Tipos de Examenes</v-toolbar-title>
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">Eliminar Tipo Examen: {{examDelete}} </v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon
+            small
+            class="mr-2"
+            @click="editItem(item)"
+          >
+            mdi-pencil
+          </v-icon>
+          <v-icon
+            small
+            @click="deleteItem(item)"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+    </v-data-table>
+
+          </v-container>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="dialog.value=false">
+              Cerrar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+        </template>
       </v-dialog>
     </div>
-
-
 
     <!--
       aqui comensamos a mostrar el mensaje
@@ -150,6 +310,17 @@ import axios from "axios";
 export default {
   data() {
     return {
+      header: [
+        {
+          text: 'ID Examen',
+          align: 'start',
+          sortable: false,
+          value: 'idExamen',
+        },
+        { text: 'Nombre', value: 'nombre' },
+        { text: 'Tipo Examen', value: 'tipoExamen' },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ],
       listExamens: [],
       search: "",
       dialog: false,
@@ -157,12 +328,22 @@ export default {
       doctores: [],
       idMedicoGrl: "",
       idPaciente: "",
-      examenes: [],
+      nombreExamen:"",
+      tipoExamen:"",
+      desserts: [],
+      examenes1: [],
+      examenes2: [],
+      examenes3: [],
+      examenes4: [],
+      examenes5: [],
       examenesSelect: [],
       spinner: false,
       vspinner: false,
       vdialog: false,
       message: "",
+      dialogDelete: false,
+      examDelete:"",
+      idExamen:0,
     };
   },
   components: {
@@ -173,7 +354,6 @@ export default {
   },
   methods: {
     async guardarSolicitud() {
-      this.dialog = false;
       let listEx = [];
       this.vdialog = true;
       console.log(this.idMedicoGrl);
@@ -258,18 +438,93 @@ export default {
     getExamenes() {
       let me = this;
       var ExaArray = [];
+      
+      if(me.desserts.length>0){
+        me.desserts=[];
+      }
+            
       axios
         .get("api/Examen")
         .then(function (resp) {
           ExaArray = resp.data;
           ExaArray.map(function (x) {
-            me.examenes.push({ text: x.nombre, value: x.idExamen });
+            if(x.tipoExamen=='Hematologia e Inmunohematologia'){
+                me.examenes1.push({ text: x.nombre, value: x.idExamen});
+            }
+            if(x.tipoExamen=='Anemias'){
+                me.examenes2.push({ text: x.nombre, value: x.idExamen});
+            }
+            if(x.tipoExamen == 'Coagulacion'){
+                me.examenes3.push({text: x.nombre, value: x.idExamen});
+            }
+            if(x.tipoExamen == 'Fibrinolisis e Hipercoagulacion'){
+                me.examenes4.push({text: x.nombre, value: x.idExamen});
+            }
+            if(x.tipoExamen == 'Bioquimica'){
+                me.examenes5.push({text: x.nombre, value: x.idExamen});
+            }
+            
+            me.desserts.push({nombre: x.nombre, idExamen: x.idExamen, tipoExamen: x.tipoExamen});
+
           });
         })
         .catch(function (err) {
           console.log(err);
         });
     },
+    async guardarExamen(){
+      let me = this;
+      this.vdialog=true;
+      var respuesta= await axios.post("api/SolicitudExamen/CrearExamen",
+          JSON.stringify({
+            idExamen: me.idExamen,
+            nombre: me.nombreExamen,
+            tipoExamen: this.tipoExamen}),
+          {
+          headers: {
+            // Overwrite Axios's automatically set Content-Type
+            "Content-Type": "application/json",
+          },
+        });
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          this.vspinner=true;
+          me.nombreExamen=null;
+          me.tipoExamen=null;
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }
+    },
+    deleteItem (item) {
+        this.editedIndex = this.desserts.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialogDelete = true;
+        this.examDelete = item.nombre;
+        this.idExamen = item.idExamen;
+      },
+    closeDelete () {
+        this.dialogDelete = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
+    async deleteItemConfirm () {
+        this.desserts.splice(this.editedIndex, 1);
+        console.log(this.idExamen);
+        
+        await axios.delete("api/Examen/"+this.idExamen)
+        .then(function () {})
+        .catch(function (err) {
+          console.log(err);
+        });
+
+        this.closeDelete();
+      },
+
   },
   created() {
     this.getSolicitudExamenes();

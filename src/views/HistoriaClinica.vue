@@ -107,8 +107,10 @@
                             <v-col sm="5">
                                 <div>
                                     <v-text-field
-                                        label="Ingrese ID Expediente"
-                                        :rules="rules"
+                                        v-model="presionArterial"
+                                        label="Ingrese Presion Arterial"
+                                        type="number"
+                                        outlined
                                     >
                                     </v-text-field>
                                 </div>
@@ -118,6 +120,8 @@
                             <v-col sm="5">
                                 <div>
                                     <v-text-field
+                                        v-model="talla"
+                                        type="number"
                                         label="Talla"
                                         :rules="rules"
                                     >
@@ -129,6 +133,8 @@
                             <v-col sm="5">
                                 <div>
                                     <v-text-field
+                                        v-model="peso"
+                                        type="number"
                                         label="Peso"
                                         :rules="rules"
                                     >
@@ -140,7 +146,9 @@
                             <v-col sm="5">
                                 <div>
                                     <v-text-field
+                                        v-model="temperatura"
                                         label="Temperatura"
+                                        type="number"
                                         :rules="rules"
                                     >
                                     </v-text-field>
@@ -151,6 +159,8 @@
                             <v-col sm="5">
                                 <div>
                                     <v-text-field
+                                        v-model="frecuenciaCardiaca"
+                                        type="number"
                                         label="Frecuencia Cardiaca"
                                         :rules="rules"
                                     >
@@ -162,6 +172,8 @@
                             <v-col sm="5">
                                 <div>
                                     <v-text-field
+                                        v-model="frecuenciaRespiratoria"
+                                        type="number"
                                         label="Frecuencia Respiratoria"
                                         :rules="rules"
                                     >
@@ -184,9 +196,9 @@
                         </v-row>                        
                     </v-card>
 
-                    <v-btn
+                    <v-btn 
                     color="primary"
-                    @click="e1 = 3"
+                    @click="e1 = 3, getDoctor()"
                     >
                     Continue
                     </v-btn>
@@ -212,16 +224,16 @@
                         <div>
                             <v-row>
                                 <v-col sm="2">
-                                    <v-chip>Expediente</v-chip>
+                                    <v-chip>Exp. Nº {{exp.idExpediente}} </v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Doctor</v-chip>
+                                    <v-chip>{{exp.doctor}} </v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Paciente</v-chip>
+                                    <v-chip>{{exp.nombrePaciente}} </v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Fecha</v-chip>
+                                    <v-chip>{{exp.fecha}} </v-chip>
                                 </v-col>
                                 <v-col sm="4">
                                     <v-select
@@ -238,6 +250,7 @@
                             <v-row>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.consultaPor"
                                         outlined
                                         name="input-7-4"
                                         label="Consulta Por"
@@ -246,6 +259,7 @@
                                 </v-col>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.enfermedadActual"
                                         outlined
                                         name="input-7-4"
                                         label="Enfermedad Actual"
@@ -256,6 +270,7 @@
                             <v-row>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.antecedentesPersonales"
                                         outlined
                                         name="input-7-4"
                                         label="Antecedentes Personales"
@@ -264,6 +279,7 @@
                                 </v-col>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.antecedentesFamiliares"
                                         outlined
                                         name="input-7-4"
                                         label="Antecedentes Familiares"
@@ -274,6 +290,7 @@
                             <v-row>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.examenesClinicos"
                                         outlined
                                         name="input-7-4"
                                         label="Examenes Clinicos"
@@ -282,6 +299,7 @@
                                 </v-col>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.exploracionFisica"
                                         outlined
                                         name="input-7-4"
                                         label="Exploracion Fisica"
@@ -292,6 +310,7 @@
                             <v-row>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.diagnosticoPrincipal"
                                         outlined
                                         name="input-7-4"
                                         label="Diagnositico Principal"
@@ -300,6 +319,7 @@
                                 </v-col>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.otroDiagnostico"
                                         outlined
                                         name="input-7-4"
                                         label="Otro Diagnostico"
@@ -310,6 +330,7 @@
                             <v-row>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.tratamiento"
                                         outlined
                                         name="input-7-4"
                                         label="Tratamiento"
@@ -318,6 +339,7 @@
                                 </v-col>
                                 <v-col sm="6">
                                     <v-textarea
+                                        v-model="exp.observaciones"
                                         outlined
                                         name="input-7-4"
                                         label="Observaciones"
@@ -356,16 +378,16 @@
                         <div>
                             <v-row>
                                 <v-col sm="2">
-                                    <v-chip>Expediente</v-chip>
+                                    <v-chip>Exp. Nº {{exp.idExpediente}}</v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Doctor</v-chip>
+                                    <v-chip>{{exp.doctor}}</v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Paciente</v-chip>
+                                    <v-chip>{{exp.nombrePaciente}}</v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Fecha</v-chip>
+                                    <v-chip>{{exp.fecha}}</v-chip>
                                 </v-col>
                                 <v-col sm="4">
                                     <v-select
@@ -380,6 +402,7 @@
                         <br>
                         <div>
                             <v-textarea
+                                v-model="exp.descripcionReceta"
                                 outlined
                                 name="input-7-4"
                                 label="Descripcion de la Receta"
@@ -418,16 +441,16 @@
                         <div>
                             <v-row>
                                 <v-col sm="2">
-                                    <v-chip>Expediente</v-chip>
+                                    <v-chip>Exp. Nº {{exp.idExpediente}}</v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Doctor</v-chip>
+                                    <v-chip>{{exp.doctor}}</v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Paciente</v-chip>
+                                    <v-chip>{{exp.nombrePaciente}}</v-chip>
                                 </v-col>
                                 <v-col sm="2">
-                                    <v-chip>Fecha</v-chip>
+                                    <v-chip>{{exp.fecha}}</v-chip>
                                 </v-col>
                                 <v-col sm="4">
                                     <v-select
@@ -442,6 +465,7 @@
                         <br>
                         <div>
                             <v-textarea
+                                v-model="exp.descripcionExamenClinico"
                                 outlined
                                 name="input-7-4"
                                 label="Descripcion Examenes Clinicos"
@@ -463,12 +487,51 @@
                     Regresar
                     </v-btn>
 
-                    <v-btn color="primary">
+                    <v-btn color="primary" @click="guardarConsulta()">
                     Guardar
                     </v-btn>
                 </v-stepper-content>
             </v-stepper-items>
         </v-stepper>
+        
+        
+        
+        <v-dialog v-model="vdialog" persistent max-width="290">
+          <v-card>
+            <v-card-title class="text-h5"> Espere Guardando </v-card-title>
+            <v-card-text>
+              <center>
+                <v-progress-circular
+                  :size="50"
+                  color="primary"
+                  indeterminate
+                ></v-progress-circular>
+              </center>
+            </v-card-text>
+          </v-card>
+      </v-dialog>
+      <v-dialog v-model="vspinner" persistent max-width="400">
+          <v-card>
+            <v-card-title class="text-h5"> Guardado </v-card-title>
+            <v-card-text>
+              <div class="text-h4 pa-12">{{ message }}</div>
+            </v-card-text>
+            <v-card-action class="justify-end">
+              <v-btn @click="vspinner=false, clearConsulta()">Cerrar</v-btn>
+            </v-card-action>
+          </v-card>
+      </v-dialog>
+      <v-dialog v-model="espinner" persistent max-width="400">
+          <v-card>
+            <v-card-title class="text-h5"> Error al Guardar</v-card-title>
+            <v-card-text>
+              <div class="text-h4 pa-12">{{ message }}</div>
+            </v-card-text>
+            <v-card-action class="justify-end">
+              <v-btn @click="espinner=false">Cerrar</v-btn>
+            </v-card-action>
+          </v-card>
+      </v-dialog>
     </div>
 </template>
 
@@ -527,7 +590,16 @@
             exp:{ConsultaModel},
             doctores:[],
             tipoConsulta:[],
-
+            presionArterial:"",
+            talla:"",
+            peso:"",
+            temperatura:"",
+            frecuenciaCardiaca:"",
+            frecuenciaRespiratoria:"",
+            vdialog: false,
+            vspinner: false,
+            espinner: false,
+            message:"",
 
         };
     },
@@ -546,6 +618,7 @@
                 .catch(function (err) {
                 console.log(err);
                 });
+
         },
         getTipoConsulta() {
             let me = this;
@@ -579,12 +652,75 @@
                         edad: x.edad,
                         sexo: x.sexo,
                         telefono: x.telefono,
-                        estadoCivil: x.estadoCivil  });
+                        estadoCivil: x.estadoCivil,
+                        idPaciente: x.idPaciente});
                 });
                 })
                 .catch(function (err) {
                 console.log(err);
                 });
+                
+        },
+        async guardarConsulta(){
+            this.vdialog = true;
+            let me=this;
+            me.consultas.forEach(element => {
+                me.exp.idExpediente=element.idExpediente,
+                me.exp.nombre=element.nombre,
+                me.exp.edad=element.edad,
+                me.exp.telefono=element.telefono,
+                me.exp.estadoCivil=element.estadoCivil
+            });
+            
+            console.log("No guarda nada");
+            me.exp.presionArterial=this.presionArterial;
+            me.exp.peso=parseInt(this.peso);
+            me.exp.talla=this.talla;
+            me.exp.temperatura=parseInt(this.temperatura);
+            me.exp.frecuenciaCardiaca=parseInt(this.frecuenciaCardiaca);
+            me.exp.frecuenciaRespiratoria=parseInt(this.frecuenciaRespiratoria);
+            console.log(me.exp.presionArterial);
+
+            var sol = await axios.post(
+                "api/Consulta/Crear",
+                JSON.stringify(this.exp),
+                {
+                    headers: { 
+                    // Overwrite Axios's automatically set Content-Type
+                    "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (sol.status == 200) {
+                this.vdialog = false;
+                this.message = sol.data.message;
+                this.vspinner = true;
+                console.log(sol.data.message);
+            } else {
+                this.vdialog = false;
+                this.message = sol.data.message;
+                this.espinner = true;
+                console.log(sol.data.message);
+            }
+        },
+        getDoctor(){
+            let me=this;
+            me.exp.fecha=new Date().toISOString().substr(0, 10),
+            me.doctores.forEach(element=>{
+                if(me.exp.idMedicoGrl==element.value){
+                    me.exp.doctor=element.text;                   
+                }
+            });
+            me.consultas.forEach(element => {
+                me.exp.idExpediente=element.idExpediente;
+                me.exp.nombrePaciente=element.nombre;
+                me.exp.sexo=element.sexo;
+                me.exp.idPaciente=element.idPaciente;
+            });
+
+        },
+        clearConsulta(){
+            location.reload();
         },
 
     },
