@@ -1,3 +1,4 @@
+
 <template>
   <v-data-table
     :headers="headers"
@@ -5,11 +6,12 @@
     sort-by="calories"
     class="elevation-1"
   >
+  
     <template v-slot:top>
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Listado de ingreso y egreso</v-toolbar-title>
+        <v-toolbar-title>Existencia de medicamento</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -28,9 +30,19 @@
               v-bind="attrs"
               v-on="on"
             >
-              Nuevo
+              entrada
+            </v-btn>
+            <v-btn
+              color="primary"
+              light
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              salida
             </v-btn>
           </template>
+            
           <v-card>
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
@@ -223,17 +235,16 @@ import DetalleMovimientoModel from  "../models/detallemovimiento";
       ],
       headers: [
         {
-          text: 'Paciente',
+          text: 'IdMedicamento',
           align: 'start',
           sortable: false,
           value: 'paciente',
         },
-        { text: 'fecha de Ingreso', value: 'fechaIngreso' },
+        { text: 'Nombre', value: 'fechaIngreso' },
         { text: 'Tipo', value: 'tipoNombre' },
-        { text: 'Concepto', value: 'descripcionConcepto' },
-        { text: 'Monto', value: 'monto' },
+        { text: 'Existencia', value: 'descripcionConcepto' },
         { text: 'Descripcion', value: 'descripcion' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        
       ],
       desserts: [],
       desp:"",

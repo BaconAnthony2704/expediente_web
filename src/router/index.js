@@ -17,6 +17,10 @@ import Login from "../components/Login.vue"
 import MenuUsuarios from "../views/MenuUsuarios.vue"
 import ExportarUsuarios from "../views/ExportarUsuarios"
 import ExportarCuentas from "../views/MenuExportar.vue"
+import transaccionMedicamentos from "../views/existencia_medicamento.vue"
+import mantenimientoMedicamentos from "../views/mantenimiento_medicamento.vue"
+
+
 import md5 from "js-md5"
 
 Vue.use(VueRouter);
@@ -24,6 +28,16 @@ const routes = [
   {
     path: '/',
     redirect: '/login'
+  },
+  {
+    path: "/mantenimiento_medicamento",
+    name: "mantanimiento_medicamento",
+    component: mantenimientoMedicamentos,
+  },
+  {
+    path: "/gestion_medicamento",
+    name: "gestion_medicamento",
+    component: transaccionMedicamentos,
   },
   {
     path: "/login",
