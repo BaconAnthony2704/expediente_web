@@ -32,7 +32,7 @@ export class ExpedienteModel{
         ultimaVacuna,
         alergias,
         incapacidades,
-        UrlImagen,
+        urlImagen,
     ){
         this.nombrePaciente=nombrePaciente;
         this.apellidoPaciente=apellidoPaciente;
@@ -66,7 +66,7 @@ export class ExpedienteModel{
         this.ultimaVacuna=ultimaVacuna;
         this.alergias=alergias;
         this.incapacidades=incapacidades;
-        this.UrlImagen=UrlImagen;
+        this.urlImagen=urlImagen;
         
 
 
