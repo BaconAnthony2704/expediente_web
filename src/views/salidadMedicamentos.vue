@@ -9,12 +9,19 @@
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Medicamentos Registrados</v-toolbar-title>
+        <v-toolbar-title>salidad de Existencia</v-toolbar-title>
+        
+        
         <v-divider
           class="mx-4"
           inset
           vertical
         ></v-divider>
+        <v-text-field
+                    
+                      v-model="editedItem.id"
+                      label="paciente "
+                    ></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
@@ -28,12 +35,12 @@
               v-bind="attrs"
               v-on="on"
             >
-              Agregar
+              Ingresar
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">Datos del nuevo medicamento</span>
+              <span class="text-h5">Datos del medicamento</span>
             </v-card-title>
 
             <v-card-text>
@@ -42,41 +49,49 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="5"
                   >
                     <v-text-field
+                    
                       v-model="editedItem.id"
-                      label="codigo"
+                      label="id "
                     ></v-text-field>
                   </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-btn dark color="prymary">
+                        Buscar
+                    </v-btn>
+                    
+                  </v-col>
+                </v-row>
+                <v-row>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
+                    
                       v-model="editedItem.nombre"
-                      label="nombre"
+                      label="nombre "
                     ></v-text-field>
                   </v-col>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.tipo"
-                      label="presentacion"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
+                    
                       v-model="editedItem.existencia"
-                      label="Existencia"
+                      label="existencia "
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -85,10 +100,12 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.descripcion"
-                      label="Descripcion"
+                        type="number"
+                      v-model="editedItem.cantidad"
+                      label="cantidad"
                     ></v-text-field>
                   </v-col>
+                  
                 </v-row>
               </v-container>
             </v-card-text>
@@ -117,7 +134,7 @@
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
               <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -153,36 +170,47 @@
 <script>
   export default {
     data: () => ({
+      idmedicamento:"",
+    }),
+    methods:{
+        mostrarTexto(){
+            alert(this.idmedicamento);
+        }
+    },
+  }
+</script>
+<script>
+  export default {
+    data: () => ({
       dialog: false,
       dialogDelete: false,
       headers: [
         {
-          text: 'Codigo',
+          text: 'id',
           align: 'start',
           sortable: false,
           value: 'id',
         },
-        { text: 'Nombre', value: 'nombre' },
-        { text: 'Tipo', value: 'tipo' },
-        { text: 'Existencia', value: 'existencia' },
-        { text: 'Descripcion', value: 'descripcion' },
+        { text: 'nombre', value: 'nombre' },
+        { text: 'Cantidad', value: 'cantidad' },
+        { text: 'existencia', value: 'existencia' },
+        
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       listadoMedicamentos: [],
       editedIndex: -1,
       editedItem: {
-        id: '',
         nombre: '',
-        tipo: '',
+        id: '',
         existencia: 0,
-        descripcion: '',
+        cantidad: 0,
+        
       },
       defaultItem: {
-        id: '',
         nombre: '',
-        tipo: '',
+        id: '',
         existencia: 0,
-        descripcion: '',
+        cantidad: 0,
       },
     }),
 
@@ -207,7 +235,7 @@
 
     methods: {
       initialize () {
-        this.listadoMedicamentos = [   ]
+        this.listadoMedicamentos = [  ]
       },
 
       editItem (item) {
@@ -246,9 +274,7 @@
       save () {
         if (this.editedIndex > -1) {
           Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
-        } 
-        //modificar el else tiene que guardar en la base de datos
-        else {
+        } else {
           this.listadoMedicamentos.push(this.editedItem)
         }
         this.close()

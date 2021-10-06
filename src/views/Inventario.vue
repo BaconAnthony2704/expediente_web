@@ -8,7 +8,8 @@
          <v-row>
              <v-col md="4">
                     <v-card>
-                    <v-img src="https://image.freepik.com/vektoren-kostenlos/einkommenssteigerung-finanzstrategie-hohe-kapitalrendite-darstellung-des-haushaltssaldos-marktwachstum-und-einkommen-gewinn-des-geschaeftswachstums_229548-425.jpg"></v-img>
+                    <v-img 
+                    src="https://image.freepik.com/vektoren-kostenlos/einkommenssteigerung-finanzstrategie-hohe-kapitalrendite-darstellung-des-haushaltssaldos-marktwachstum-und-einkommen-gewinn-des-geschaeftswachstums_229548-425.jpg"></v-img>
                 
                     <v-card-actions>
                         <v-btn href="#/gestion_medicamento" color="info" >Transacciones de medicamento</v-btn>
