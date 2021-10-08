@@ -1,4 +1,6 @@
 <template>
+<v-dialog v-model="show" max-width="800">
+<v-card>
   <v-data-table
     :headers="headers"
     :items="listadoMedicamentos"
@@ -56,7 +58,7 @@
                     sm="6"
                     md="4"
                   >
-                    <v-btn dark color="prymary">
+                    <v-btn dark color="prymary" @click="alert('ejecutando')">
                         Buscar
                     </v-btn>
                     
@@ -108,14 +110,14 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="close"
+                @click="showdialog(false)"
               >
                 Cancelar
               </v-btn>
               <v-btn
                 color="blue darken-1"
                 text
-                @click="save"
+                @click.native="save"
               >
                 Guardar
               </v-btn>
@@ -159,6 +161,13 @@
       </v-btn>
     </template>
   </v-data-table>
+  <v-cart-actions>
+    <v-btn color="primary" flat @click.stop="show=false">Close</v-btn>
+  </v-cart-actions>
+</v-card>
+
+</v-dialog>
+  
 </template>
 <script>
   export default {
@@ -174,6 +183,7 @@
 </script>
 <script>
   export default {
+     props: ['visible'],
     data: () => ({
       dialog: false,
       dialogDelete: false,
@@ -190,7 +200,14 @@
         
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      listadoMedicamentos: [],
+      listadoMedicamentos: [
+        {
+            id: 'Frozen Yogurt',
+            nombre: 159,
+            cantidad: 6.0,
+            existencia: 24,
+          },
+      ],
       editedIndex: -1,
       editedItem: {
         nombre: '',
@@ -208,6 +225,22 @@
     }),
 
     computed: {
+      
+      show: {
+      get () {
+        return this.visible
+      },
+      set (value) {
+        if (!value) {
+          this.$emit('close')
+        }
+      },
+
+      showdialog(evento){
+        alert("ejecutando");
+        this.dialog=evento;
+      },
+          
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
@@ -249,11 +282,14 @@
       },
 
       close () {
+        alert("ejecutandose");
+        console.log(this);
         this.dialog = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
+        
       },
 
       closeDelete () {
@@ -273,5 +309,6 @@
         this.close()
       },
     },
+  }
   }
 </script>

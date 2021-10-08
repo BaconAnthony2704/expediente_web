@@ -10,42 +10,19 @@
 
         </v-col>
        <v-col md="2">
-    <v-dialog
-      v-model="dialogoIngresar"
-      persistent
-      max-width="890"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Ingresar
-        </v-btn>
-      </template>
-      <v-card>
-        <ingresoMedicamento></ingresoMedicamento>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="dialogoIngresar = false"
-          >
-            Cancelar 
-          </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="dialogoIngresar = false"
-          >
-            Guardar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <div>
+      <v-btn
+      color="primary"
+      @click.stop="dialogoIngresar=true"
+      text="ingresar"
+      >ingresar
+      </v-btn>      
+      <ingresoMedicamento :visible="dialogoIngresar" @close="dialogoIngresar=false" />
+    </div>
+    
+    
+        
+    
         </v-col>
        
        
