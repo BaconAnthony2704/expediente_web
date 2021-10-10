@@ -1,5 +1,6 @@
 <template>
 <v-dialog v-model="show" max-width="800">
+
 <v-card>
   <v-data-table
     :headers="headers"
@@ -110,7 +111,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="showdialog(false)"
+                @click="alert('hola')"
               >
                 Cancelar
               </v-btn>
@@ -230,8 +231,8 @@
       get () {
         return this.visible
       },
-      set (value) {
-        if (!value) {
+      set (values) {
+        if (!values) {
           this.$emit('close')
         }
       },

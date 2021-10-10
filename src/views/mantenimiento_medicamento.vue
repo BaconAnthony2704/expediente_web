@@ -4,12 +4,20 @@
     :items="listadoMedicamentos"
     sort-by="calories"
     class="elevation-1"
+    :search="search"
+    :custom-filter="filterOnlyCapsText"
   >
     <template v-slot:top>
+      
       <v-toolbar
         flat
       >
         <v-toolbar-title>Medicamentos Registrados</v-toolbar-title>
+        <v-text-field
+          v-model="search"
+          label="Buscar Medicamento"
+          class="mx-4"
+        ></v-text-field>
         <v-divider
           class="mx-4"
           inset
@@ -45,7 +53,8 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.id"
+                    type="number"
+                      v-model="editedItem.idMedicamento"
                       label="codigo"
                     ></v-text-field>
                   </v-col>
@@ -75,6 +84,7 @@
                     md="4"
                   >
                     <v-text-field
+                      type="number"
                       v-model="editedItem.existencia"
                       label="Existencia"
                     ></v-text-field>
@@ -151,8 +161,10 @@
   </v-data-table>
 </template>
 <script>
+import axios from 'axios';
   export default {
     data: () => ({
+      search: '',
       dialog: false,
       dialogDelete: false,
       headers: [
@@ -160,7 +172,7 @@
           text: 'Codigo',
           align: 'start',
           sortable: false,
-          value: 'id',
+          value: 'idMedicamento',
         },
         { text: 'Nombre', value: 'nombre' },
         { text: 'Tipo', value: 'tipo' },
@@ -171,14 +183,14 @@
       listadoMedicamentos: [],
       editedIndex: -1,
       editedItem: {
-        id: '',
+        idMedicamento: 0,
         nombre: '',
         tipo: '',
         existencia: 0,
         descripcion: '',
       },
       defaultItem: {
-        id: '',
+        idMedicamento: 0,
         nombre: '',
         tipo: '',
         existencia: 0,
@@ -207,10 +219,33 @@
 
     methods: {
       initialize () {
-        this.listadoMedicamentos = [   ]
+        //hacer la consulta a la api getmedicamentos
+        //this.listadoMedicamentos = [   ]
+        this.listarMedicamentos();
+      },
+      filterOnlyCapsText (value, search) {
+        return value != null &&
+          search != null &&
+          typeof value === 'string' &&
+          value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
+      },
+      async listarMedicamentos(){
+        try {
+          let response = await axios.get("api/medicamentos");
+          
+          this.listadoMedicamentos=response.data;
+          console.log(response.data);
+
+          
+          
+      } catch (error) {
+          console.log(error);
+          }
       },
 
       editItem (item) {
+        //llamar al ws de editar pasandole el id
+        
         this.editedIndex = this.listadoMedicamentos.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
@@ -223,7 +258,10 @@
       },
 
       deleteItemConfirm () {
-        this.listadoMedicamentos.splice(this.editedIndex, 1)
+        //this.listadoMedicamentos.splice(this.editedIndex, 1)
+        //consultar la api de borrar
+        this.eliminarMedicamento();
+
         this.closeDelete()
       },
 
@@ -245,13 +283,74 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+          //logica cuando se edita
+          //Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+          var id=this.editedItem;
+           this.editedItem.existencia=parseInt(this.editedItem.existencia);
+           this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
+          this.editarMedicamento(id);
         } 
         //modificar el else tiene que guardar en la base de datos
         else {
-          this.listadoMedicamentos.push(this.editedItem)
+          //guardar el nuevo medicamento en la api es post medicamento
+          //this.listadoMedicamentos.push(this.editedItem)  //listar fuera de consulta
+          this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
+          this.editedItem.existencia=parseInt(this.editedItem.existencia);
+          this.guardarMedicamento(this.editedItem);
+          
         }
         this.close()
+      },
+      async guardarMedicamento(item){
+       try {
+         console.log(item);
+          let response = await axios.post("api/medicamentos",item);
+          
+          
+          console.log(response.data);
+
+         this.listarMedicamentos();
+       
+          
+      } catch (error) {
+          console.log(error);
+          }
+      },
+      async editarMedicamento(item){
+       try {
+         var id=item.idMedicamento;
+         var endpoint="api/medicamentos/"+id;
+         console.log(item);
+          let response = await axios.put(endpoint,item);
+          
+          
+          console.log(response.data);
+
+         this.listarMedicamentos();
+       
+          
+      } catch (error) {
+          console.log(error);
+          }
+      },
+      async eliminarMedicamento(){
+       try {
+         var obj=this.editedItem;
+         var id=obj.idMedicamento;
+         
+         var endpoint="api/medicamentos/"+id;
+         console.log(id);
+          let response = await axios.delete(endpoint);
+          
+          
+          console.log(response.data);
+
+         this.listarMedicamentos();
+       
+          
+      } catch (error) {
+          console.log(error);
+          }
       },
     },
   }

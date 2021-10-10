@@ -13,7 +13,7 @@
     <div>
       <v-btn
       color="primary"
-      @click.stop="dialogoIngresar=true"
+      @click="dialogoIngresar=true"
       text="ingresar"
       >ingresar
       </v-btn>      
@@ -27,7 +27,7 @@
        
        
        <v-col md="2">
-          <v-dialog
+    <v-dialog
       v-model="dialogoSalir"
       persistent
       max-width="700"
