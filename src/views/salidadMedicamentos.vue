@@ -4,25 +4,24 @@
     :items="listadoMedicamentos"
     sort-by="calories"
     class="elevation-1"
-    :search="search"
-    :custom-filter="filterOnlyCapsText"
   >
     <template v-slot:top>
-      
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Medicamentos Registrados</v-toolbar-title>
-        <v-text-field
-          v-model="search"
-          label="Buscar Medicamento"
-          class="mx-4"
-        ></v-text-field>
+        <v-toolbar-title>salidad de Existencia</v-toolbar-title>
+        
+        
         <v-divider
           class="mx-4"
           inset
           vertical
         ></v-divider>
+        <v-text-field
+                    
+                      v-model="editedItem.id"
+                      label="paciente "
+                    ></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
@@ -36,12 +35,12 @@
               v-bind="attrs"
               v-on="on"
             >
-              Agregar
+              Ingresar
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">Datos del nuevo medicamento</span>
+              <span class="text-h5">Datos del medicamento</span>
             </v-card-title>
 
             <v-card-text>
@@ -50,43 +49,49 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="5"
                   >
                     <v-text-field
-                    type="number"
-                      v-model="editedItem.idMedicamento"
-                      label="codigo"
+                    
+                      v-model="editedItem.id"
+                      label="id "
                     ></v-text-field>
                   </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-btn dark color="prymary">
+                        Buscar
+                    </v-btn>
+                    
+                  </v-col>
+                </v-row>
+                <v-row>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
+                    
                       v-model="editedItem.nombre"
-                      label="nombre"
+                      label="nombre "
                     ></v-text-field>
                   </v-col>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.tipo"
-                      label="presentacion"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      type="number"
+                    
                       v-model="editedItem.existencia"
-                      label="Existencia"
+                      label="existencia "
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -95,10 +100,12 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.descripcion"
-                      label="Descripcion"
+                        type="number"
+                      v-model="editedItem.cantidad"
+                      label="cantidad"
                     ></v-text-field>
                   </v-col>
+                  
                 </v-row>
               </v-container>
             </v-card-text>
@@ -127,7 +134,7 @@
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
               <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -161,40 +168,49 @@
   </v-data-table>
 </template>
 <script>
-import axios from 'axios';
   export default {
     data: () => ({
-      search: '',
+      idmedicamento:"",
+    }),
+    methods:{
+        mostrarTexto(){
+            alert(this.idmedicamento);
+        }
+    },
+  }
+</script>
+<script>
+  export default {
+    data: () => ({
       dialog: false,
       dialogDelete: false,
       headers: [
         {
-          text: 'Codigo',
+          text: 'id',
           align: 'start',
           sortable: false,
-          value: 'idMedicamento',
+          value: 'id',
         },
-        { text: 'Nombre', value: 'nombre' },
-        { text: 'Tipo', value: 'tipo' },
-        { text: 'Existencia', value: 'existencia' },
-        { text: 'Descripcion', value: 'descripcion' },
+        { text: 'nombre', value: 'nombre' },
+        { text: 'Cantidad', value: 'cantidad' },
+        { text: 'existencia', value: 'existencia' },
+        
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       listadoMedicamentos: [],
       editedIndex: -1,
       editedItem: {
-        idMedicamento: 0,
         nombre: '',
-        tipo: '',
+        id: '',
         existencia: 0,
-        descripcion: '',
+        cantidad: 0,
+        
       },
       defaultItem: {
-        idMedicamento: 0,
         nombre: '',
-        tipo: '',
+        id: '',
         existencia: 0,
-        descripcion: '',
+        cantidad: 0,
       },
     }),
 
@@ -219,33 +235,10 @@ import axios from 'axios';
 
     methods: {
       initialize () {
-        //hacer la consulta a la api getmedicamentos
-        //this.listadoMedicamentos = [   ]
-        this.listarMedicamentos();
-      },
-      filterOnlyCapsText (value, search) {
-        return value != null &&
-          search != null &&
-          typeof value === 'string' &&
-          value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
-      },
-      async listarMedicamentos(){
-        try {
-          let response = await axios.get("api/medicamentos");
-          
-          this.listadoMedicamentos=response.data;
-          console.log(response.data);
-
-          
-          
-      } catch (error) {
-          console.log(error);
-          }
+        this.listadoMedicamentos = [  ]
       },
 
       editItem (item) {
-        //llamar al ws de editar pasandole el id
-        
         this.editedIndex = this.listadoMedicamentos.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
@@ -258,10 +251,7 @@ import axios from 'axios';
       },
 
       deleteItemConfirm () {
-        //this.listadoMedicamentos.splice(this.editedIndex, 1)
-        //consultar la api de borrar
-        this.eliminarMedicamento();
-
+        this.listadoMedicamentos.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
@@ -283,74 +273,11 @@ import axios from 'axios';
 
       save () {
         if (this.editedIndex > -1) {
-          //logica cuando se edita
-          //Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
-          var id=this.editedItem;
-           this.editedItem.existencia=parseInt(this.editedItem.existencia);
-           this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
-          this.editarMedicamento(id);
-        } 
-        //modificar el else tiene que guardar en la base de datos
-        else {
-          //guardar el nuevo medicamento en la api es post medicamento
-          //this.listadoMedicamentos.push(this.editedItem)  //listar fuera de consulta
-          this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
-          this.editedItem.existencia=parseInt(this.editedItem.existencia);
-          this.guardarMedicamento(this.editedItem);
-          
+          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+        } else {
+          this.listadoMedicamentos.push(this.editedItem)
         }
         this.close()
-      },
-      async guardarMedicamento(item){
-       try {
-         console.log(item);
-          let response = await axios.post("api/medicamentos",item);
-          
-          
-          console.log(response.data);
-
-         this.listarMedicamentos();
-       
-          
-      } catch (error) {
-          console.log(error);
-          }
-      },
-      async editarMedicamento(item){
-       try {
-         var id=item.idMedicamento;
-         var endpoint="api/medicamentos/"+id;
-         console.log(item);
-          let response = await axios.put(endpoint,item);
-          
-          
-          console.log(response.data);
-
-         this.listarMedicamentos();
-       
-          
-      } catch (error) {
-          console.log(error);
-          }
-      },
-      async eliminarMedicamento(){
-       try {
-         var obj=this.editedItem;
-         var id=obj.idMedicamento;
-         
-         var endpoint="api/medicamentos/"+id;
-         console.log(id);
-          let response = await axios.delete(endpoint);
-          
-          
-          console.log(response.data);
-
-         this.listarMedicamentos();
-       
-          
-      } catch (error) {
-          console.log(error);
-          }
       },
     },
   }
