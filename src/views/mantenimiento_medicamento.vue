@@ -54,7 +54,7 @@
                   >
                     <v-text-field
                     type="number"
-                      v-model="editedItem.idMedicamento"
+                      v-model="editedItem.idmedicamento"
                       label="codigo"
                     ></v-text-field>
                   </v-col>
@@ -172,7 +172,7 @@ import axios from 'axios';
           text: 'Codigo',
           align: 'start',
           sortable: false,
-          value: 'idMedicamento',
+          value: 'idmedicamento',
         },
         { text: 'Nombre', value: 'nombre' },
         { text: 'Tipo', value: 'tipo' },
@@ -183,14 +183,14 @@ import axios from 'axios';
       listadoMedicamentos: [],
       editedIndex: -1,
       editedItem: {
-        idMedicamento: 0,
+        idmedicamento: 0,
         nombre: '',
         tipo: '',
         existencia: 0,
         descripcion: '',
       },
       defaultItem: {
-        idMedicamento: 0,
+        idmedicamento: 0,
         nombre: '',
         tipo: '',
         existencia: 0,
@@ -287,14 +287,14 @@ import axios from 'axios';
           //Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
           var id=this.editedItem;
            this.editedItem.existencia=parseInt(this.editedItem.existencia);
-           this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
+           this.editedItem.idmedicamento=parseInt(this.editedItem.idmedicamento);
           this.editarMedicamento(id);
         } 
         //modificar el else tiene que guardar en la base de datos
         else {
           //guardar el nuevo medicamento en la api es post medicamento
           //this.listadoMedicamentos.push(this.editedItem)  //listar fuera de consulta
-          this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
+          this.editedItem.idmedicamento=parseInt(this.editedItem.idmedicamento);
           this.editedItem.existencia=parseInt(this.editedItem.existencia);
           this.guardarMedicamento(this.editedItem);
           
@@ -318,7 +318,7 @@ import axios from 'axios';
       },
       async editarMedicamento(item){
        try {
-         var id=item.idMedicamento;
+         var id=item.idmedicamento;
          var endpoint="api/medicamentos/"+id;
          console.log(item);
           let response = await axios.put(endpoint,item);
@@ -336,7 +336,8 @@ import axios from 'axios';
       async eliminarMedicamento(){
        try {
          var obj=this.editedItem;
-         var id=obj.idMedicamento;
+         var id=obj.idmedicamento;
+         id=parseInt(id);
          
          var endpoint="api/medicamentos/"+id;
          console.log(id);

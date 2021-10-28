@@ -43,7 +43,10 @@
         </v-btn>
       </template>
       <v-card>
-        <salidad-medicamentos></salidad-medicamentos>
+         <salidad-medicamentos></salidad-medicamentos>
+
+      
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -51,14 +54,14 @@
             text
             @click="dialogoSalir = false"
           >
-            Disagree
+            Cerrar
           </v-btn>
           <v-btn
             color="green darken-1"
             text
             @click="dialogoSalir = false"
           >
-            Agree
+            Cerrar
           </v-btn>
         </v-card-actions>
       </v-card>
