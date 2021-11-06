@@ -5,23 +5,53 @@
         <h1>Exitencia de medicamentos</h1>
       </v-col>
     </v-row>
+    
+    
     <v-row>
         <v-col md="8">
 
         </v-col>
        <v-col md="2">
-    <div>
-      <v-btn
-      color="primary"
-      @click="dialogoIngresar=true"
-      text="ingresar"
-      >ingresar
-      </v-btn>      
-      <ingresoMedicamento :visible="dialogoIngresar" @close="dialogoIngresar=false" />
-    </div>
+         <v-dialog
+      v-model="dialogoIngresar"
+      persistent
+      max-width="700"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="red"
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+          Ingresar
+        </v-btn>
+      </template>
+      <v-card>
+ 
+<add-existencia></add-existencia>     
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogoIngresar = false"
+          >
+            Cerrar
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogoIngresar = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     
-    
-        
+     
     
         </v-col>
        
@@ -103,10 +133,13 @@
 
 </template>
 <script>
-import ingresoMedicamento from './ingresoMedicamento.vue'
+import axios from 'axios';
+import AddExistencia from './addExistencia.vue'
+
+//import ingresoMedicamento from './ingresoMedicamento.vue'
 import SalidadMedicamentos from './salidadMedicamentos.vue'
   export default {
-  components: { ingresoMedicamento, SalidadMedicamentos },
+  components: { /*ingresoMedicamento,*/ SalidadMedicamentos,  AddExistencia },
     data () {
       return {
         search: '',
@@ -134,13 +167,16 @@ import SalidadMedicamentos from './salidadMedicamentos.vue'
               return value < parseInt(this.nombre)
             },
           },
-          { text: 'Presentacion', value: 'presentacion' },
+          { text: 'Presentacion', value: 'tipo' },
           { text: 'Existencia', value: 'existencia' },
-          { text: 'descripcion', value: 'protein' },
+          { text: 'descripcion', value: 'descripcion' },
           
         ]
       },
     },
+    created () {
+      this.listarMedicamentos()
+       },
     methods: {
       filterOnlyCapsText (value, search) {
         return value != null &&
@@ -148,6 +184,21 @@ import SalidadMedicamentos from './salidadMedicamentos.vue'
           typeof value === 'string' &&
           value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
       },
+      
+      async listarMedicamentos(){
+        try {
+          let response = await axios.get("api/medicamentos");
+          
+          this.listadoMedicamentos=response.data;
+          console.log(response.data);
+
+          
+          
+      } catch (error) {
+          console.log(error);
+          }
+      },
+
     },
   }
 </script>
