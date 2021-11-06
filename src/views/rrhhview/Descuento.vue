@@ -66,7 +66,7 @@
                     sm="6"
                     md="4"
                   >
-                    <v-select v-model="editedItem.idEmpleado" :items="empleados"></v-select>
+                    <v-select v-model="seleccion" :items="empleados"></v-select>
                   </v-col>
                   
                 </v-row>
@@ -85,7 +85,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="guardarDescuento()"
+                @click="decision()"
               >
                 Guardar
               </v-btn>
@@ -140,6 +140,7 @@ import axios from "axios";
       dialog: false,
       dialogDelete: false,
       idDes:'',
+      seleccion:'',
       headers: [
         {
           text: 'ID Descuento',
@@ -174,7 +175,7 @@ import axios from "axios";
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'Nuevo Descuento' : 'Nuevo Descuento'
+        return this.editedIndex === -1 ? 'Nuevo Descuento' : 'Editar Descuento'
       },
     },
 
@@ -217,8 +218,26 @@ import axios from "axios";
          
       },
 
-      editItem (item) {
+      async editItem (item) {
+        //var DocArray=[];
         this.editedIndex = this.desserts.indexOf(item)
+        this.empleados=[];
+
+      var respuesta = await axios.post("api/Empleado/ListarDescuentoUno",
+          JSON.stringify({
+            idDescuento: item.idDescuento,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.empleados.push({ text: respuesta.data.nombreEmpleado, value: respuesta.data.idEmpleado });
+        this.seleccion=respuesta.data.idEmpleado;
+
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -232,15 +251,21 @@ import axios from "axios";
 
       async deleteItemConfirm () {
         this.desserts.splice(this.editedIndex, 1)
-        console.log(this.idDes);
+        this.editedItem.idDescuento=this.idDes;
+        
+        await axios.post("api/Empleado/deleteDescuento",
+          JSON.stringify({
+            idDescuento: this.idDes
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-        await axios.delete("api/Empleado/"+this.idDes)
-        .then(function () {})
-        .catch(function (err) {
-          console.log(err);
-        });
-
-        this.closeDelete()
+        this.closeDelete();
       },
 
       close () {
@@ -260,14 +285,13 @@ import axios from "axios";
       },
       async guardarDescuento(){
         this.vdialog=true;
-               
+          
           var respuesta = await axios.post("api/Empleado/CrearDescuento",
           JSON.stringify({
-            idDescuento: parseInt(this.editedItem.idDescuento),
+            idDescuento: 0,
             descripcion: this.editedItem.descripcion,
             monto: parseFloat(this.editedItem.monto),
-            idEmpleado: parseInt(this.editedItem.idEmpleado),
-            fecha: '2021-02-01 00:00:00',
+            idEmpleado: parseInt(this.seleccion),
           }),
           {
             headers: {
@@ -277,7 +301,6 @@ import axios from "axios";
           }
         );
 
-        console.log("Entrastes puto")
         this.vdialog = false;
         if(respuesta.status==200){
           this.message="Guardado Correctamente";
@@ -288,8 +311,35 @@ import axios from "axios";
           this.message="Error vuelva a intentarlo mas tarde";
           this.vspinner=true;
         }      
+      },
+      async editarDescuento(){
+        this.vdialog=true;
+          
+          var respuesta = await axios.put("api/Empleado/editarDescuento",
+          JSON.stringify({
+            idDescuento: this.editedItem.idDescuento,
+            descripcion: this.editedItem.descripcion,
+            monto: parseFloat(this.editedItem.monto),
+            idEmpleado: parseInt(this.seleccion),
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          this.vspinner=true;
+          console.log(respuesta.status);
+          this.save();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }      
       },
       getEmpleados() {
       let me = this;
@@ -306,7 +356,14 @@ import axios from "axios";
           console.log(err);
         });
     },
-
+    decision(){
+        if(this.formTitle=="Editar Descuento"){
+          console.log("Casi papu");
+          this.editarDescuento();
+        }else{
+          this.guardarDescuento();
+        }
+      },
       save () {
         if (this.editedIndex > -1) {
           Object.assign(this.desserts[this.editedIndex], this.editedItem)

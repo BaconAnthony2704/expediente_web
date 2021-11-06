@@ -118,7 +118,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="guardarEmpleado()"
+                @click="decision()"
               >
                 Guardar
               </v-btn>
@@ -199,7 +199,7 @@
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'Nuevo Empleado' : 'Nuevo Empleado'
+        return this.editedIndex === -1 ? 'Nuevo Empleado' : 'Editar Empleado'
       },
     },
 
@@ -303,6 +303,42 @@
           this.vspinner=true;
         }
       },
+      async editarEmpleado(){
+        let me=this.editedItem;
+        this.vdialog=true;
+        me.dui=parseInt(this.editedItem.dui);
+        me.nit=parseInt(this.editedItem.nit);
+        me.sueldo=parseFloat(this.editedItem.sueldo);
+        
+          var respuesta = await axios.put("/api/Empleado/Editar",
+          JSON.stringify(this.editedItem),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Editado Correctamente";
+          this.vspinner=true;
+          this.editItem();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }
+      },
+      decision(){
+        if(this.formTitle=="Editar Empleado"){
+          this.editarEmpleado();
+        }else{
+          this.guardarEmpleado();
+        }
+      },
+
+
 
       save () {
         if (this.editedIndex > -1) {
