@@ -1,0 +1,23 @@
+export class EmpleadoModel{
+    constructor(
+        idEmpleado,
+        dui,
+        nit,
+        nombreEmpleado,
+        fechaIngreso,
+        fechaSalida,
+        titulo,
+        cargo,
+        sueldo,
+    ){
+        this.idEmpleado=idEmpleado;
+        this.dui=dui;
+        this.nit=nit;
+        this.nombreEmpleado=nombreEmpleado;
+        this.fechaIngreso=fechaIngreso;
+        this.fechaSalida=fechaSalida;
+        this.titulo=titulo;
+        this.cargo=cargo;
+        this.sueldo=sueldo;
+    }
+}

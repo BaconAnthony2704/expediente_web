@@ -16,12 +16,20 @@ import HistoriaClinica from "../views/HistoriaClinica.vue"
 import Login from "../components/Login.vue"
 import MenuUsuarios from "../views/MenuUsuarios.vue"
 import ExportarUsuarios from "../views/ExportarUsuarios"
+import Empleado from "../views/rrhhview/Empleado.vue"
+import Anticipo from "../views/rrhhview/Anticipo.vue"
+import AsistenciaLaboral from "../views/rrhhview/AsistenciaLaboral.vue"
+import Capacitacion from "../views/rrhhview/Capacitacion.vue"
+import Descuento from "../views/rrhhview/Descuento.vue"
+import Permisos from "../views/rrhhview/Permisos.vue"
+import Sancion from "../views/rrhhview/Sancion.vue"
 import ExportarCuentas from "../views/MenuExportar.vue"
 import transaccionMedicamentos from "../views/existencia_medicamento.vue"
 import mantenimientoMedicamentos from "../views/mantenimiento_medicamento.vue"
 
 
 import md5 from "js-md5"
+
 
 Vue.use(VueRouter);
 const routes = [
@@ -44,6 +52,7 @@ const routes = [
     name: "login",
     component: Login,
   },
+
   {
     path: "/mantenimiento_usuario",
     name: "menuUsuarios",
@@ -123,6 +132,7 @@ const routes = [
     name:"historiaClinica",
     component:HistoriaClinica
   },
+
   {
     path:"/home",
     name: "Home",
@@ -132,6 +142,41 @@ const routes = [
     path:"/dashboard",
     name:"dashboard",
     component:Dashboard
+  },
+  {
+    path:"/empleado",
+    name:"empleado",
+    component: Empleado
+  },
+  {
+    path:"/anticipo",
+    name:"anticipo",
+    component: Anticipo
+  },
+  {
+    path:"/asistencialaboral",
+    name:"asistencialaboral",
+    component: AsistenciaLaboral
+  },
+  {
+    path:"/capacitacion",
+    name:"capacitacion",
+    component: Capacitacion
+  },
+  {
+    path:"/descuento",
+    name:"descuento",
+    component: Descuento
+  },
+  {
+    path:"/permisos",
+    name:"permisos",
+    component: Permisos
+  },
+  {
+    path:"/sancion",
+    name:"sancion",
+    component: Sancion
   },
   
 ];
