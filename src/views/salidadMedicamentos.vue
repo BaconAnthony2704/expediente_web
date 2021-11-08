@@ -1,4 +1,7 @@
 <template>
+<v-container>
+<v-row >    
+  <v-col md="12">
   <v-data-table
     :headers="headers"
     :items="listadoMedicamentos"
@@ -17,11 +20,13 @@
           inset
           vertical
         ></v-divider>
-        <v-text-field
-                    
-                      v-model="editedItem.id"
-                      label="paciente "
-                    ></v-text-field>
+        <v-select 
+        v-model="editedItem.paciente"
+        :items="listadoPacientes"
+        >
+
+        </v-select>
+        
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
@@ -53,7 +58,7 @@
                   >
                     <v-text-field
                     
-                      v-model="editedItem.id"
+                      v-model="editedItem.idMedicamento"
                       label="id "
                     ></v-text-field>
                   </v-col>
@@ -63,7 +68,8 @@
                     sm="6"
                     md="4"
                   >
-                    <v-btn dark color="prymary">
+                    <v-btn dark color="prymary"
+                    @click="buscarMedicamento">
                         Buscar
                     </v-btn>
                     
@@ -165,21 +171,20 @@
         Reset
       </v-btn>
     </template>
+    
   </v-data-table>
+  </v-col>
+  </v-row>
+  <v-row>
+    <v-btn @click="prueba" color="primary">
+      guardar
+    </v-btn>
+  </v-row>
+</v-container>
 </template>
 <script>
-  export default {
-    data: () => ({
-      idmedicamento:"",
-    }),
-    methods:{
-        mostrarTexto(){
-            alert(this.idmedicamento);
-        }
-    },
-  }
-</script>
-<script>
+import axios from 'axios';
+//import { json } from 'express';
   export default {
     data: () => ({
       dialog: false,
@@ -189,7 +194,7 @@
           text: 'id',
           align: 'start',
           sortable: false,
-          value: 'id',
+          value: 'idMedicamento',
         },
         { text: 'nombre', value: 'nombre' },
         { text: 'Cantidad', value: 'cantidad' },
@@ -197,20 +202,23 @@
         
         { text: 'Actions', value: 'actions', sortable: false },
       ],
+      listadoPacientes:[],
       listadoMedicamentos: [],
       editedIndex: -1,
       editedItem: {
         nombre: '',
-        id: '',
+        idMedicamento: 0,
         existencia: 0,
         cantidad: 0,
+        paciente:''
         
       },
       defaultItem: {
         nombre: '',
-        id: '',
+        idMedicamento: 0,
         existencia: 0,
         cantidad: 0,
+        paciente:''
       },
     }),
 
@@ -230,11 +238,105 @@
     },
 
     created () {
-      this.initialize()
+      this.initialize();
+      this.getPacientes();
     },
 
     methods: {
+      async prueba(){
+         //agregando nuevo
+          //consultar la api 
+          /* 
+          pasos: 
+          1- crear el objeto recetaMedicamento (la receta lleva el id del paciente)
+          2-obtener ese id para relacionar las demas cosas
+          3-crear el objeto transaccion medicamento(cada item de medicamento es un objeto con el id de 
+          medicamento y el idde la receta) 
+          */
+        //var idpaciente=this.editItem.id;
+        //var enviarlista=this.listadoMedicamentos;
+        
+        //mandar la lista a la api
+
+        
+        
+       try {
+         //console.log(item);
+          //var lista=JSON.stringify(this.listadoMedicamentos);
+        /*  this.listadoMedicamentos=[]
+          this.listadoMedicamentos.push({
+            
+          "idMedicamento":4,
+          "nombre":"samayoa",
+          "existencia":10,
+    
+           "cantidad":125
+
+          })
+          */
+          
+          let response = await axios.post("api/salidadexistencias",this.listadoMedicamentos);
+//          this.listadoMedicamentos.forEach(element => {
+  //          console.log(element);
+    //      });
+          
+          console.log(response.data);
+          this.listadoMedicamentos=[ ]
+          this.initialize(); 
+        
+         
+        alert("exito");
+        console.log(this.listadoMedicamentos[1]);
+          
+      } catch (error) {
+          console.log(error);
+          alert("fallo");
+          }
+      },
+      getPacientes() {
+      let me = this;
+      var PaciArray = [];
+      axios
+        .get("api/ComboBox/ListarPaciente")
+        .then(function (resp) {
+          PaciArray = resp.data;
+          PaciArray.map(function (x) {
+            me.listadoPacientes.push({ text: x.nombre, value: x.nombre });
+          });
+        })
+        
+        
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
+      async buscarMedicamento(){
+         
+       try {
+
+
+          var id=this.editedItem.idMedicamento;
+          console.log(id);
+          var endpoint="api/medicamentos/"+id
+          
+          let response = await axios.get(endpoint);
+
+          
+          console.log(response.data.nombre);
+          this.editedItem.nombre=response.data.nombre;
+          this.editedItem.existencia=response.data.existencia;
+          
+          
+        
+         
+          
+      } catch (error) {
+          console.log(error);
+          alert("fallo");
+          }
+      },
       initialize () {
+        //consultar api de listado de medicamentos
         this.listadoMedicamentos = [  ]
       },
 
@@ -245,8 +347,10 @@
       },
 
       deleteItem (item) {
+        
         this.editedIndex = this.listadoMedicamentos.indexOf(item)
         this.editedItem = Object.assign({}, item)
+        
         this.dialogDelete = true
       },
 
@@ -273,8 +377,19 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+          //editando los items
+        // this.editedItem.existencia= parseInt(this.editedItem.existencia);
+          
+          //Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+          this.editedItem.cantidad= parseInt(this.editedItem.cantidad);
+         
+          this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
+         this.editedItem.existencia=parseInt(this.editedItem.existencia); 
+         
         } else {
+         this.editedItem.existencia=parseInt(this.editedItem.existencia);
+          this.editedItem.cantidad=parseInt(this.editedItem.cantidad);
+          this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
           this.listadoMedicamentos.push(this.editedItem)
         }
         this.close()

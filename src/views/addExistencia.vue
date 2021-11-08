@@ -1,23 +1,20 @@
 <template>
+<v-container>
+<v-row >    
+  <v-col md="12">
   <v-data-table
     :headers="headers"
     :items="listadoMedicamentos"
     sort-by="calories"
     class="elevation-1"
-    :search="search"
-    :custom-filter="filterOnlyCapsText"
   >
     <template v-slot:top>
-      
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Medicamentos Registrados</v-toolbar-title>
-        <v-text-field
-          v-model="search"
-          label="Buscar Medicamento"
-          class="mx-4"
-        ></v-text-field>
+        <v-toolbar-title>Ingreso de Existencia</v-toolbar-title>
+        
+        
         <v-divider
           class="mx-4"
           inset
@@ -36,12 +33,12 @@
               v-bind="attrs"
               v-on="on"
             >
-              Agregar
+              Ingresar
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">Datos del nuevo medicamento</span>
+              <span class="text-h5">Datos del medicamento</span>
             </v-card-title>
 
             <v-card-text>
@@ -50,43 +47,50 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="5"
                   >
                     <v-text-field
-                    type="number"
-                      v-model="editedItem.idmedicamento"
-                      label="codigo"
+                    
+                      v-model="editedItem.idMedicamento"
+                      label="id "
                     ></v-text-field>
                   </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-btn dark color="prymary"
+                    @click="buscarMedicamento">
+                        Buscar
+                    </v-btn>
+                    
+                  </v-col>
+                </v-row>
+                <v-row>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
+                    
                       v-model="editedItem.nombre"
-                      label="nombre"
+                      label="nombre "
                     ></v-text-field>
                   </v-col>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.tipo"
-                      label="presentacion"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      type="number"
+                    
                       v-model="editedItem.existencia"
-                      label="Existencia"
+                      label="existencia "
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -95,10 +99,12 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.descripcion"
-                      label="Descripcion"
+                        type="number"
+                      v-model="editedItem.cantidad"
+                      label="cantidad"
                     ></v-text-field>
                   </v-col>
+                  
                 </v-row>
               </v-container>
             </v-card-text>
@@ -127,7 +133,7 @@
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
               <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -158,43 +164,56 @@
         Reset
       </v-btn>
     </template>
+    
   </v-data-table>
+  </v-col>
+  </v-row>
+  <v-row >
+    <v-col cols="12">
+      <v-btn 
+    @click="prueba"
+    color="blue">
+      guardar
+    </v-btn>
+    </v-col>
+    
+  </v-row>
+</v-container>
 </template>
 <script>
 import axios from 'axios';
+//import { json } from 'express';
   export default {
     data: () => ({
-      search: '',
       dialog: false,
       dialogDelete: false,
       headers: [
         {
-          text: 'Codigo',
+          text: 'id',
           align: 'start',
           sortable: false,
-          value: 'idmedicamento',
+          value: 'idMedicamento',
         },
-        { text: 'Nombre', value: 'nombre' },
-        { text: 'Tipo', value: 'tipo' },
-        { text: 'Existencia', value: 'existencia' },
-        { text: 'Descripcion', value: 'descripcion' },
+        { text: 'nombre', value: 'nombre' },
+        { text: 'Cantidad', value: 'cantidad' },
+        { text: 'existencia', value: 'existencia' },
+        
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       listadoMedicamentos: [],
       editedIndex: -1,
       editedItem: {
-        idmedicamento: 0,
         nombre: '',
-        tipo: '',
+        idMedicamento: 0,
         existencia: 0,
-        descripcion: '',
+        cantidad: 0
+        
       },
       defaultItem: {
-        idmedicamento: 0,
         nombre: '',
-        tipo: '',
+        idMedicamento: 0,
         existencia: 0,
-        descripcion: '',
+        cantidad: 0
       },
     }),
 
@@ -218,53 +237,104 @@ import axios from 'axios';
     },
 
     methods: {
-      initialize () {
-        //hacer la consulta a la api getmedicamentos
-        //this.listadoMedicamentos = [   ]
-        this.listarMedicamentos();
-      },
-      filterOnlyCapsText (value, search) {
-        console.log(value)
+      async prueba(){
+         //agregando nuevo
+          //consultar la api 
+          /* 
+          pasos: 
+          1- crear el objeto recetaMedicamento (la receta lleva el id del paciente)
+          2-obtener ese id para relacionar las demas cosas
+          3-crear el objeto transaccion medicamento(cada item de medicamento es un objeto con el id de 
+          medicamento y el idde la receta) 
+          */
+        //var idpaciente=this.editItem.id;
+        //var enviarlista=this.listadoMedicamentos;
+        
+        //mandar la lista a la api
 
-        return value != null &&
-          search != null &&
-          typeof value === 'string' &&
-          value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
-      },
-      async listarMedicamentos(){
-        try {
-          let response = await axios.get("api/medicamentos");
+        
+        
+       try {
+         //console.log(item);
+          //var lista=JSON.stringify(this.listadoMedicamentos);
+        /*  this.listadoMedicamentos=[]
+          this.listadoMedicamentos.push({
+            
+          "idMedicamento":4,
+          "nombre":"samayoa",
+          "existencia":10,
+    
+           "cantidad":125
+
+          })
+          */
           
-          this.listadoMedicamentos=response.data;
+          let response = await axios.post("api/EntradaExistencias",this.listadoMedicamentos);
+//          this.listadoMedicamentos.forEach(element => {
+  //          console.log(element);
+    //      });
+          
           console.log(response.data);
-
-          
+          this.listadoMedicamentos=[ ]
+          this.initialize(); 
+        
+         
+        alert("exito");
+        console.log(this.listadoMedicamentos[1]);
           
       } catch (error) {
           console.log(error);
           alert("fallo");
           }
       },
+      async buscarMedicamento(){
+         
+       try {
+
+
+          var id=this.editedItem.idMedicamento;
+          console.log(id);
+          var endpoint="api/medicamentos/"+id
+          
+          let response = await axios.get(endpoint);
+
+          
+          console.log(response.data.nombre);
+          this.editedItem.nombre=response.data.nombre;
+          this.editedItem.existencia=response.data.existencia;
+          if(response.data.nombre==null){
+            alert("no encontrado");
+          }
+          
+        
+         
+          
+      } catch (error) {
+          console.log(error);
+          alert("fallo");
+          }
+      },
+      initialize () {
+        //consultar api de listado de medicamentos
+        this.listadoMedicamentos = [  ]
+      },
 
       editItem (item) {
-        //llamar al ws de editar pasandole el id
-        
         this.editedIndex = this.listadoMedicamentos.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
+        
         this.editedIndex = this.listadoMedicamentos.indexOf(item)
         this.editedItem = Object.assign({}, item)
+        
         this.dialogDelete = true
       },
 
       deleteItemConfirm () {
-        //this.listadoMedicamentos.splice(this.editedIndex, 1)
-        //consultar la api de borrar
-        this.eliminarMedicamento();
-
+        this.listadoMedicamentos.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
@@ -286,81 +356,22 @@ import axios from 'axios';
 
       save () {
         if (this.editedIndex > -1) {
-          //logica cuando se edita
-          //Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
-          var id=this.editedItem;
-           this.editedItem.existencia=parseInt(this.editedItem.existencia);
-           this.editedItem.idmedicamento=parseInt(this.editedItem.idmedicamento);
-          this.editarMedicamento(id);
-        } 
-        //modificar el else tiene que guardar en la base de datos
-        else {
-          //guardar el nuevo medicamento en la api es post medicamento
-          //this.listadoMedicamentos.push(this.editedItem)  //listar fuera de consulta
-          this.editedItem.idmedicamento=parseInt(this.editedItem.idmedicamento);
-          this.editedItem.existencia=parseInt(this.editedItem.existencia);
-          this.guardarMedicamento(this.editedItem);
+          //editando los items
+        // this.editedItem.existencia= parseInt(this.editedItem.existencia);
           
+          //Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+          this.editedItem.cantidad= parseInt(this.editedItem.cantidad);
+         
+          this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
+         this.editedItem.existencia=parseInt(this.editedItem.existencia); 
+         
+        } else {
+         this.editedItem.existencia=parseInt(this.editedItem.existencia);
+          this.editedItem.cantidad=parseInt(this.editedItem.cantidad);
+          this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
+          this.listadoMedicamentos.push(this.editedItem)
         }
         this.close()
-      },
-      async guardarMedicamento(item){
-       try {
-         console.log(item);
-          let response = await axios.post("api/medicamentos",item);
-          
-          
-          console.log(response.data);
-          alert("medicamento guardado");
-
-         this.listarMedicamentos();
-       
-          
-      } catch (error) {
-          console.log(error);
-          alert("fallo");
-          }
-      },
-      async editarMedicamento(item){
-       try {
-         var id=item.idmedicamento;
-         var endpoint="api/medicamentos/"+id;
-         console.log(item);
-          let response = await axios.put(endpoint,item);
-          
-          
-          console.log(response.data);
-          alert("Medicamento actualizado");
-
-         this.listarMedicamentos();
-       
-          
-      } catch (error) {
-          console.log(error);
-          alert("fallo");
-          }
-      },
-      async eliminarMedicamento(){
-       try {
-         var obj=this.editedItem;
-         var id=obj.idmedicamento;
-         id=parseInt(id);
-         
-         var endpoint="api/medicamentos/"+id;
-         console.log(id);
-          let response = await axios.delete(endpoint);
-          
-          
-          console.log(response.data);
-          alert("medicamento borrado");
-
-         this.listarMedicamentos();
-       
-          
-      } catch (error) {
-          console.log(error);
-          alert("fallo");
-          }
       },
     },
   }
