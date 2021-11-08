@@ -20,11 +20,13 @@
           inset
           vertical
         ></v-divider>
-        <v-text-field
-                    
-                      v-model="editedItem.id"
-                      label="paciente "
-                    ></v-text-field>
+        <v-select 
+        v-model="editedItem.paciente"
+        :items="listadoPacientes"
+        >
+
+        </v-select>
+        
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
@@ -174,7 +176,7 @@
   </v-col>
   </v-row>
   <v-row>
-    <v-btn @click="prueba">
+    <v-btn @click="prueba" color="primary">
       guardar
     </v-btn>
   </v-row>
@@ -200,20 +202,23 @@ import axios from 'axios';
         
         { text: 'Actions', value: 'actions', sortable: false },
       ],
+      listadoPacientes:[],
       listadoMedicamentos: [],
       editedIndex: -1,
       editedItem: {
         nombre: '',
         idMedicamento: 0,
         existencia: 0,
-        cantidad: 0
+        cantidad: 0,
+        paciente:''
         
       },
       defaultItem: {
         nombre: '',
         idMedicamento: 0,
         existencia: 0,
-        cantidad: 0
+        cantidad: 0,
+        paciente:''
       },
     }),
 
@@ -233,7 +238,8 @@ import axios from 'axios';
     },
 
     created () {
-      this.initialize()
+      this.initialize();
+      this.getPacientes();
     },
 
     methods: {
@@ -279,13 +285,31 @@ import axios from 'axios';
           this.initialize(); 
         
          
-        alert(this.listadoMedicamentos.length);
+        alert("exito");
         console.log(this.listadoMedicamentos[1]);
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
+      getPacientes() {
+      let me = this;
+      var PaciArray = [];
+      axios
+        .get("api/ComboBox/ListarPaciente")
+        .then(function (resp) {
+          PaciArray = resp.data;
+          PaciArray.map(function (x) {
+            me.listadoPacientes.push({ text: x.nombre, value: x.nombre });
+          });
+        })
+        
+        
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
       async buscarMedicamento(){
          
        try {
@@ -308,6 +332,7 @@ import axios from 'axios';
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
       initialize () {

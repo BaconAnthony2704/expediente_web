@@ -12,7 +12,7 @@
       <v-toolbar
         flat
       >
-        <v-toolbar-title>salidad de Existencia</v-toolbar-title>
+        <v-toolbar-title>Ingreso de Existencia</v-toolbar-title>
         
         
         <v-divider
@@ -20,11 +20,6 @@
           inset
           vertical
         ></v-divider>
-        <v-text-field
-                    
-                      v-model="editedItem.id"
-                      label="paciente "
-                    ></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
@@ -173,10 +168,15 @@
   </v-data-table>
   </v-col>
   </v-row>
-  <v-row>
-    <v-btn @click="prueba">
+  <v-row >
+    <v-col cols="12">
+      <v-btn 
+    @click="prueba"
+    color="blue">
       guardar
     </v-btn>
+    </v-col>
+    
   </v-row>
 </v-container>
 </template>
@@ -279,11 +279,12 @@ import axios from 'axios';
           this.initialize(); 
         
          
-        alert(this.listadoMedicamentos.length);
+        alert("exito");
         console.log(this.listadoMedicamentos[1]);
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
       async buscarMedicamento(){
@@ -301,13 +302,16 @@ import axios from 'axios';
           console.log(response.data.nombre);
           this.editedItem.nombre=response.data.nombre;
           this.editedItem.existencia=response.data.existencia;
-          
+          if(response.data.nombre==null){
+            alert("no encontrado");
+          }
           
         
          
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
       initialize () {

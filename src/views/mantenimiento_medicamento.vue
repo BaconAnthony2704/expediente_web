@@ -224,6 +224,8 @@ import axios from 'axios';
         this.listarMedicamentos();
       },
       filterOnlyCapsText (value, search) {
+        console.log(value)
+
         return value != null &&
           search != null &&
           typeof value === 'string' &&
@@ -240,6 +242,7 @@ import axios from 'axios';
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
 
@@ -308,12 +311,14 @@ import axios from 'axios';
           
           
           console.log(response.data);
+          alert("medicamento guardado");
 
          this.listarMedicamentos();
        
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
       async editarMedicamento(item){
@@ -325,12 +330,14 @@ import axios from 'axios';
           
           
           console.log(response.data);
+          alert("Medicamento actualizado");
 
          this.listarMedicamentos();
        
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
       async eliminarMedicamento(){
@@ -345,12 +352,14 @@ import axios from 'axios';
           
           
           console.log(response.data);
+          alert("medicamento borrado");
 
          this.listarMedicamentos();
        
           
       } catch (error) {
           console.log(error);
+          alert("fallo");
           }
       },
     },

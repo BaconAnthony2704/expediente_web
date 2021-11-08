@@ -19,7 +19,7 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          color="red"
+          color="green"
           dark
           v-bind="attrs"
           v-on="on"
@@ -40,13 +40,7 @@
           >
             Cerrar
           </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="dialogoIngresar = false"
-          >
-            Cerrar
-          </v-btn>
+          
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -86,13 +80,7 @@
           >
             Cerrar
           </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="dialogoSalir = false"
-          >
-            Cerrar
-          </v-btn>
+          
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -101,7 +89,7 @@
     <v-data-table
       :headers="headers"
       :items="listadoMedicamentos"
-      item-key="name"
+      sort-by="nombre"
       class="elevation-1"
       :search="search"
       :custom-filter="filterOnlyCapsText"
@@ -161,11 +149,7 @@ import SalidadMedicamentos from './salidadMedicamentos.vue'
           {
             text: 'nombre',
             value: 'nombre',
-            filter: value => {
-              if (!this.nombre) return true
-
-              return value < parseInt(this.nombre)
-            },
+            
           },
           { text: 'Presentacion', value: 'tipo' },
           { text: 'Existencia', value: 'existencia' },
@@ -179,10 +163,12 @@ import SalidadMedicamentos from './salidadMedicamentos.vue'
        },
     methods: {
       filterOnlyCapsText (value, search) {
+        
         return value != null &&
           search != null &&
           typeof value === 'string' &&
           value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
+
       },
       
       async listarMedicamentos(){
