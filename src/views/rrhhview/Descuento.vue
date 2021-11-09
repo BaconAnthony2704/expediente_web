@@ -27,6 +27,7 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
+              @click="getEmpleados()"
             >
               Nuevo Descuento
             </v-btn>
@@ -344,6 +345,8 @@ import axios from "axios";
       getEmpleados() {
       let me = this;
       var DocArray = [];
+      this.empleados=[];
+      this.seleccion='';
       axios
         .get("api/Empleado/Listar")
         .then(function (resp) {

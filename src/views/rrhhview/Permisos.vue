@@ -27,6 +27,7 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
+              @click="getEmpleados()"
             >
               Nuevo Permiso
             </v-btn>
@@ -45,16 +46,6 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.idPermiso"
-                      label="ID Capacitacion"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
                       v-model="editedItem.descripcion"
                       label="Descripcion"
                     ></v-text-field>
@@ -64,11 +55,17 @@
                     sm="6"
                     md="4"
                   >
-                    
+                    <v-select v-model="seleccion" :items="empleados"></v-select>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
                     <v-dialog
                     ref="dialog"
                     v-model="modal"
-                    :return-value.sync="date"
+                    :return-value.sync="editedItem.fecha"
                     persistent
                     width="290px"
                   >
@@ -83,7 +80,7 @@
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                      v-model="date"
+                      v-model="editedItem.fecha"
                       type="date"
                       scrollable
                     >
@@ -98,13 +95,12 @@
                       <v-btn
                         text
                         color="primary"
-                        @click="$refs.dialog.save(date)"
+                        @click="$refs.dialog.save(editedItem.fecha)"
                       >
                         OK
                       </v-btn>
                     </v-date-picker>
                   </v-dialog>
-
                   </v-col>
                 </v-row>
               </v-container>
@@ -122,7 +118,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="save"
+                @click="decision()"
               >
                 Guardar
               </v-btn>
@@ -131,7 +127,7 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">¿Desea Eliminar el Permiso?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -175,6 +171,9 @@ import axios from "axios";
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      empleados:[],
+      seleccion:'',
+      idDes:'',
       headers: [
         {
           text: 'ID Permiso',
@@ -205,7 +204,7 @@ import axios from "axios";
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'Nuevo Permiso' : 'Nuevo Permiso'
+        return this.editedIndex === -1 ? 'Nuevo Permiso' : 'Editar Permiso'
       },
     },
 
@@ -220,6 +219,7 @@ import axios from "axios";
 
     created () {
       this.initialize()
+      this.getEmpleados()
     },
 
     methods: {
@@ -228,7 +228,7 @@ import axios from "axios";
         var Array = [];
         
         axios
-          .get("/api/Empleado/ListarSancion")
+          .get("/api/Empleado/ListarPermiso")
           .then(function (resp) {
             Array = resp.data;
             Array.map(function (x) {
@@ -247,9 +247,26 @@ import axios from "axios";
 
       },
 
-      editItem (item) {
+      async editItem (item) {
         this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
+        this.empleados=[];
+
+        var respuesta = await axios.post("api/Empleado/ListarPermisoUno",
+            JSON.stringify({
+              idPermiso: item.idPermiso,
+            }),
+            {
+              headers: {
+                // Overwrite Axios's automatically set Content-Type
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+        this.empleados.push({ text: respuesta.data.nombreEmpleado, value: respuesta.data.idEmpleado });
+        this.seleccion=respuesta.data.idEmpleado;
+
         this.dialog = true
       },
 
@@ -257,10 +274,23 @@ import axios from "axios";
         this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
+        this.idDes=item.idPermiso;
       },
 
-      deleteItemConfirm () {
+      async deleteItemConfirm () {
         this.desserts.splice(this.editedIndex, 1)
+        
+        await axios.post("api/Empleado/deletePermiso",
+          JSON.stringify({
+            idPermiso: this.idDes,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
         this.closeDelete()
       },
 
@@ -278,6 +308,89 @@ import axios from "axios";
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
+      },
+      async guardarPermiso(){
+        this.vdialog=true;
+          
+          var respuesta = await axios.post("api/Empleado/CrearPermiso",
+          JSON.stringify({
+            idPermiso: 0,
+            descripcion: this.editedItem.descripcion,
+            idEmpleado: parseInt(this.seleccion),
+            fecha: this.editedItem.fecha,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          this.vspinner=true;
+          console.log(respuesta.status);
+          this.save();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }      
+      },
+      async editarPermiso(){
+        this.vdialog=true;
+          
+          var respuesta = await axios.put("api/Empleado/editarPermiso",
+          JSON.stringify({
+            idPermiso: this.editedItem.idPermiso,
+            descripcion: this.editedItem.descripcion,
+            idEmpleado: parseInt(this.seleccion),
+            fecha: this.editedItem.fecha,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          this.vspinner=true;
+          console.log(respuesta.status);
+          this.save();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }      
+      },
+      getEmpleados() {
+      let me = this;
+      var DocArray = [];
+      this.empleados=[];
+      this.seleccion='';
+      axios
+        .get("api/Empleado/Listar")
+        .then(function (resp) {
+          DocArray = resp.data;
+          DocArray.map(function (x) {
+            me.empleados.push({ text: x.nombreEmpleado, value: x.idEmpleado });
+          });
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
+    decision(){
+        if(this.formTitle=="Editar Permiso"){
+          console.log("Casi papu");
+          this.editarPermiso();
+        }else{
+          this.guardarPermiso();
+        }
       },
 
       save () {

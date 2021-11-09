@@ -44,41 +44,51 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
-                      v-model="editedItem.idAsistenciLaboral"
-                      label="ID Asistencia Laboral"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
+                    <v-checkbox
                       v-model="editedItem.sePresento"
                       label="sePresento"
-                    ></v-text-field>
+                    ></v-checkbox>
                   </v-col>
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
+                    <v-checkbox
                       v-model="editedItem.conPermiso"
                       label="conPermiso"
-                    ></v-text-field>
+                    ></v-checkbox>
+                  </v-col>
+                 <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-select v-model="seleccion" :items="empleados"></v-select>
                   </v-col>
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
-                    
+                    <v-select v-model="seleccion1" :items="permisos"></v-select>
+                    <v-btn
+                      color="primary"
+                      v-if="editedItem.conPermiso"
+                      @click="getPermisos()"
+                    >
+                      Buscar Permiso
+                    </v-btn>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
                     <v-dialog
                     ref="dialog"
                     v-model="modal"
-                    :return-value.sync="date"
+                    :return-value.sync="editedItem.fecha"
                     persistent
                     width="290px"
                   >
@@ -93,7 +103,7 @@
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                      v-model="date"
+                      v-model="editedItem.fecha"
                       type="date"
                       scrollable
                     >
@@ -108,13 +118,12 @@
                       <v-btn
                         text
                         color="primary"
-                        @click="$refs.dialog.save(date)"
+                        @click="$refs.dialog.save(editedItem.fecha)"
                       >
                         OK
                       </v-btn>
                     </v-date-picker>
                   </v-dialog>
-
                   </v-col>
                 </v-row>
               </v-container>
@@ -132,7 +141,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="save"
+                @click="decision()"
               >
                 Guardar
               </v-btn>
@@ -141,7 +150,7 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Estas Seguro de Eliminar</v-card-title>
+            <v-card-title class="text-h5">¿Deseas Eliminar la Asistencia Laboral?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -180,11 +189,19 @@
 
 
 <script>
+import axios from "axios";
   export default {
     data: () => ({
+      checkbox1: true,
+      checkbox2: true,
       dialog: false,
       modal: false,
       dialogDelete: false,
+      empleados:[],
+      permisos:[],
+      seleccion:'',
+      seleccion1:'',
+      idDes:'',
       headers: [
         {
           text: 'ID Asistencia Laboral',
@@ -194,6 +211,8 @@
         },
         { text: 'sePresento', value: 'sePresento' },
         { text: 'conPermiso', value: 'conPermiso' },
+        { text: 'Permiso', value: 'descripcion' },
+        { text: 'Nombre', value: 'nombre' },
         { text: 'Fecha', value: 'fecha' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
@@ -204,18 +223,22 @@
         sePresento:'',
         conPermiso:'',
         fecha:'',
+        idPermiso:0,
+        idEmpleado:0,
       },
       defaultItem: {
         idAsistenciaLaboral: '',
         sePresento:'',
         conPermiso:'',
         fecha:'',
+        idPermiso:0,
+        idEmpleado:0,
       },
     }),
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'Nueva Asistencia Laboral' : 'Nueva Asistencia Laboral'
+        return this.editedIndex === -1 ? 'Nueva Asistencia Laboral' : 'Editar Asistencia Laboral'
       },
     },
 
@@ -230,48 +253,55 @@
 
     created () {
       this.initialize()
+      this.getEmpleados()
     },
 
     methods: {
       initialize () {
-        this.desserts = [
-          {
-            idAsistenciaLaboral: 'Frozen Yogurt',
-            sePresento: 159,
-            conPermiso: 6.0,
-            fecha: 24,
-          },
-          {
-            idAsistenciaLaboral: 'Ice cream sandwich',
-            sePresento: 237,
-            conPermiso: 9.0,
-            fecha: 37,
-          },
-          {
-            idAsistenciaLaboral: 'Eclair',
-            sePresento: 262,
-            conPermiso: 16.0,
-            fecha: 23,
-          },
-          {
-            idAsistenciaLaboral: 'Cupcake',
-            sePresento: 305,
-            conPermiso: 3.7,
-            fecha: 67,
-          },
-          {
-            idAsistenciaLaboral: 'Gingerbread',
-            sePresento: 356,
-            conPermiso: 16.0,
-            fecha: 49,
-          },
-          
-        ]
+       let me = this;
+        var Array = [];
+        
+        axios
+          .get("/api/Empleado/ListarAsistenciaLaboral")
+          .then(function (resp) {
+            Array = resp.data;
+            Array.map(function (x) {
+              me.desserts.push({
+                idAsistenciaLaboral: x.idAsistenciaLaboral,
+                sePresento: x.sePresento,
+                conPermiso: x.conPermiso,
+                descripcion: x.permiso.descripcion,
+                nombre: x.empleado.nombreEmpleado,
+                fecha: x.fecha,
+              });
+          });
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
       },
 
-      editItem (item) {
+      async editItem (item) {
         this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
+        this.empleados=[];
+        this.permisos=[];
+
+        var respuesta = await axios.post("api/Empleado/ListarAsistenciaLaboralDos",
+            JSON.stringify({
+              idAsistenciaLaboral: item.idAsistenciaLaboral,
+            }),
+            {
+              headers: {
+                // Overwrite Axios's automatically set Content-Type
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+        this.empleados.push({ text: respuesta.data.nombreEmpleado, value: respuesta.data.idEmpleado });
+        this.seleccion=respuesta.data.idEmpleado;
+
         this.dialog = true
       },
 
@@ -279,10 +309,24 @@
         this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
+        this.idDes=item.idAsistenciaLaboral
       },
 
-      deleteItemConfirm () {
+      async deleteItemConfirm () {
         this.desserts.splice(this.editedIndex, 1)
+
+      await axios.post("api/Empleado/deleteAsistenciaLaboral",
+          JSON.stringify({
+            idAsistenciaLaboral: this.idDes,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         this.closeDelete()
       },
 
@@ -300,6 +344,135 @@
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
+      },
+
+      async guardarAsistenciaLaboral(){
+        this.vdialog=true;
+        var sePresento=false;
+        var conPermiso=false;
+          if(this.editedItem.sePresento==true){
+              sePresento=true;
+              console.log("Se Presento: "+sePresento);
+          }
+          
+          if(this.editedItem.conPermiso==true){
+              conPermiso=true;
+              console.log("Con Permiso: "+conPermiso);
+          }
+          
+          
+          var respuesta = await axios.post("api/Empleado/CrearAsistenciaLaboral",
+          JSON.stringify({
+            idAsistenciaLaboral: 0,
+            sePresento: sePresento,
+            conPermiso: conPermiso,
+            fecha: this.editedItem.fecha,
+            idPermiso:parseInt(this.seleccion1),
+            idEmpleado: parseInt(this.seleccion),
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          this.vspinner=true;
+          console.log(respuesta.status);
+          this.save();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }      
+      },
+      async editarAsistenciaLaboral(){
+        this.vdialog=true;
+        var sePresento=false;
+        var conPermiso=false;
+          if(this.editedItem.sePresento==true){
+              sePresento=true;
+              console.log("Se Presento: "+sePresento);
+          }
+          
+          if(this.editedItem.conPermiso==true){
+              conPermiso=true;
+              console.log("Con Permiso: "+conPermiso);
+          }
+
+          var respuesta = await axios.put("api/Empleado/editarAsistenciaLaboral",
+          JSON.stringify({
+            idAsistenciaLaboral: this.editedItem.idAsistenciaLaboral,
+            sePresento: sePresento,
+            conPermiso: conPermiso,
+            fecha: this.editedItem.fecha,
+            idPermiso: parseInt(this.seleccion1),
+            idEmpleado: parseInt(this.seleccion),
+            
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          this.vspinner=true;
+          console.log(respuesta.status);
+          this.save();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }      
+      },
+      getEmpleados() {
+      let me = this;
+      var DocArray = [];
+      this.empleados=[];
+      this.seleccion='';
+      axios
+        .get("api/Empleado/Listar")
+        .then(function (resp) {
+          DocArray = resp.data;
+          DocArray.map(function (x) {
+            me.empleados.push({ text: x.nombreEmpleado, value: x.idEmpleado });
+          });
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
+    async getPermisos() {
+      this.permisos=[];
+      this.seleccion1='';
+      var respuesta = await axios.post("api/Empleado/ListarAsistenciaLaboralUno",
+        JSON.stringify({
+          idEmpleado: this.seleccion,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+                "Content-Type": "application/json",
+            },
+          }
+        );
+
+      this.permisos.push({ text: respuesta.data.descripcion, value: respuesta.data.idPermiso });
+      this.seleccion1=respuesta.data.idPermiso;
+    },
+    decision(){
+        if(this.formTitle=="Editar Asistencia Laboral"){
+          this.editarAsistenciaLaboral();
+        }else{
+          this.guardarAsistenciaLaboral();
+        }
       },
 
       save () {

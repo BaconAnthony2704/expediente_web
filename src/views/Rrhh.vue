@@ -145,6 +145,25 @@
                     </v-card-actions>
                 </v-card>
             </v-col>
+            <v-col sm="4">
+                <v-card>
+                    <v-img
+                    src="../assets/planilla.png"
+                    class="white--text align-end"
+                    height="200px"
+                    width="200px"
+                    >
+                    </v-img>
+
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn width="200px" :to="{ name: 'planilla' }">
+                        PLANILLA
+                    </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-col>
         </v-row>
     </div>
 </template>
