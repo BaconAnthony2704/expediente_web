@@ -8,8 +8,8 @@
          <v-row>
              <v-col md="4">
                     <v-card>
-                    <v-img 
-                    src="https://image.freepik.com/vektoren-kostenlos/einkommenssteigerung-finanzstrategie-hohe-kapitalrendite-darstellung-des-haushaltssaldos-marktwachstum-und-einkommen-gewinn-des-geschaeftswachstums_229548-425.jpg"></v-img>
+                    <v-img width="500" height="300" 
+                    src="https://cdn-bkaia.nitrocdn.com/BFTxzGCeSiHeYakoWkKipwTAkydShuyH/assets/static/optimized/rev-bb9162a/wp-content/uploads/2018/08/inventario.jpg"></v-img>
                 
                     <v-card-actions>
                         <v-btn href="#/gestion_medicamento" color="info" >Transacciones de medicamento</v-btn>
@@ -21,7 +21,7 @@
          
              <v-col md="4">
                     <v-card>
-                    <v-img src="https://image.freepik.com/vektoren-kostenlos/einkommenssteigerung-finanzstrategie-hohe-kapitalrendite-darstellung-des-haushaltssaldos-marktwachstum-und-einkommen-gewinn-des-geschaeftswachstums_229548-425.jpg"></v-img>
+                    <v-img width="500" height="300" src="https://ufop.br/sites/default/files/styles/topo_da_not_cia/public/banner-850x410px_0.jpg"></v-img>
                 
                     <v-card-actions>
                         <v-btn href="#/mantenimiento_medicamento" color="info" >Mantenimiento de medicamento</v-btn>
