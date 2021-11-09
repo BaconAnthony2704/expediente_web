@@ -141,10 +141,10 @@ import SalidadMedicamentos from './salidadMedicamentos.vue'
       headers () {
         return [
           {
-            text: 'Estado',
+            text: 'codigo',
             align: 'start',
             sortable: false,
-            value: 'estado',
+            value: 'idmedicamento',
           },
           {
             text: 'nombre',

@@ -2,7 +2,7 @@
 <v-container>
     <v-row>
       <v-col md="12">
-        <h1>Exitencia de medicamentos</h1>
+        <h1>Consolidado de transaciones de medicamentos</h1>
       </v-col>
     </v-row>
     
@@ -39,27 +39,24 @@
     
       </v-col>
     </v-row>
-    <table class="table table-bordered" id="content">
-        <thead>
-          <tr>
-            <th class="text-left">Estado</th>
-            <th class="text-left">nombre</th>
-            <th class="text-left">presentacion</th>
-            <th class="text-left">existencia</th>
-            <th class="text-left">descripcion</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item) in listadoMedicamentos" :key="item">
-            <td>{{ item.estado }}</td>
-            <td>{{ item.nombre }}</td>
-            <td>{{ item.tipo }}</td>
-            <td>{{ item.existencia }}</td>
-            <td>{{ item.descripcion }}</td>
-          </tr>
-        </tbody>
-    </table>
-  
+    <template>
+  <v-card>
+    <v-card-title>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="listadoMedicamentos"
+      :search="search"
+    ></v-data-table>
+  </v-card>
+</template>
 </v-container>
   
 
@@ -87,19 +84,21 @@ import html2canvas from "html2canvas";
       headers () {
         return [
           {
-            text: 'Estado',
+            text: 'TipoTransaccion',
             align: 'start',
-            sortable: false,
-            value: 'estado',
-          },
-          {
-            text: 'nombre',
-            value: 'nombre',
+            
+             value: 'tipo_transaccion',
             
           },
-          { text: 'Presentacion', value: 'tipo' },
-          { text: 'Existencia', value: 'existencia' },
-          { text: 'descripcion', value: 'descripcion' },
+          { text: 'codigo', value: 'medicamento.idmedicamento' },
+          {
+            text: 'nombre',
+            value: 'medicamento.nombre',
+            
+          },
+          
+          { text: 'Cantidad', value: 'cantidad' },
+          { text: 'fecha', value: 'receta.fecha' },
           
         ]
       },
@@ -141,7 +140,7 @@ import html2canvas from "html2canvas";
       
       async listarMedicamentos(){
         try {
-          let response = await axios.get("api/medicamentos");
+          let response = await axios.get("api/salidadExistencias");
           
           this.listadoMedicamentos=response.data;
           console.log(response.data);

@@ -52,7 +52,7 @@
         </thead>
         <tbody>
           <tr v-for="(item) in listadoMedicamentos" :key="item">
-            <td>{{ item.estado }}</td>
+            <td>{{ item.idmedicamento }}</td>
             <td>{{ item.nombre }}</td>
             <td>{{ item.tipo }}</td>
             <td>{{ item.existencia }} Unidades</td>
@@ -78,7 +78,7 @@ export default {
         text: "Codigo",
         align: "start",
         sortable: false,
-        value: "estado",
+        value: "idmedicamento",
       },
       { text: "Nombre", value: "nombre" },
       { text: "Tipo", value: "tipo" },
