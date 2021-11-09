@@ -380,7 +380,7 @@ import axios from 'axios';
           //editando los items
         // this.editedItem.existencia= parseInt(this.editedItem.existencia);
           
-          //Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
           this.editedItem.cantidad= parseInt(this.editedItem.cantidad);
          
           this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
