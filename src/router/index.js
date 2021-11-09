@@ -26,6 +26,10 @@ import Sancion from "../views/rrhhview/Sancion.vue"
 import ExportarCuentas from "../views/MenuExportar.vue"
 import transaccionMedicamentos from "../views/existencia_medicamento.vue"
 import mantenimientoMedicamentos from "../views/mantenimiento_medicamento.vue"
+import empleadoreport from "../views/reportview/empleadoreport.vue"
+import existenciareport from "../views/reportview/existenciareport.vue"
+import ingresoegresoreport from "../views/reportview/ingresoegresoreport.vue"
+import medicamentoreport from "../views/reportview/medicamentoreport.vue"
 
 
 import md5 from "js-md5"
@@ -178,7 +182,26 @@ const routes = [
     name:"sancion",
     component: Sancion
   },
-  
+  {
+    path:"/empleadoreport",
+    name:"empleadoreport",
+    component: empleadoreport
+  },
+  {
+    path:"/existenciareport",
+    name:"existenciareport",
+    component: existenciareport
+  },
+  {
+    path:"/ingresoegresoreport",
+    name:"ingresoegresoreport",
+    component: ingresoegresoreport
+  },
+  {
+    path:"/medicamentoreport",
+    name:"medicamentoreport",
+    component: medicamentoreport
+  },
 ];
 
 const router = new VueRouter({

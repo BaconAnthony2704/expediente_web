@@ -22,27 +22,12 @@
           color="green"
           dark
           v-bind="attrs"
-          v-on="on"
+          @click="exportPDF()"
         >
-          Ingresar
+          Generar PDF
         </v-btn>
       </template>
-      <v-card>
- 
-<add-existencia></add-existencia>     
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="dialogoIngresar = false"
-          >
-            Cerrar
-          </v-btn>
-          
-        </v-card-actions>
-      </v-card>
+      
     </v-dialog>
     
      
@@ -51,70 +36,29 @@
        
        
        <v-col md="2">
-    <v-dialog
-      v-model="dialogoSalir"
-      persistent
-      max-width="700"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="red"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Salidad
-        </v-btn>
-      </template>
-      <v-card>
-         <salidad-medicamentos></salidad-medicamentos>
-
-      
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="dialogoSalir = false"
-          >
-            Cerrar
-          </v-btn>
-          
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    
       </v-col>
     </v-row>
-    <v-data-table
-      :headers="headers"
-      :items="listadoMedicamentos"
-      sort-by="nombre"
-      class="elevation-1"
-      :search="search"
-      :custom-filter="filterOnlyCapsText"
-    >
-      <template v-slot:top>
-        <v-text-field
-          v-model="search"
-          label="buscar"
-          class="mx-4"
-        ></v-text-field>
-      </template>
-      <template v-slot:body.append>
-        <tr>
-          <td></td>
-          <td>
-            <v-text-field
-              v-model="nombre"
-              
-              label="Less than"
-            ></v-text-field>
-          </td>
-          <td colspan="4"></td>
-        </tr>
-      </template>
-    </v-data-table>
+    <table class="table table-bordered" id="content">
+        <thead>
+          <tr>
+            <th class="text-left">Estado</th>
+            <th class="text-left">nombre</th>
+            <th class="text-left">presentacion</th>
+            <th class="text-left">existencia</th>
+            <th class="text-left">descripcion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item) in listadoMedicamentos" :key="item">
+            <td>{{ item.estado }}</td>
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.tipo }}</td>
+            <td>{{ item.existencia }}</td>
+            <td>{{ item.descripcion }}</td>
+          </tr>
+        </tbody>
+    </table>
   
 </v-container>
   
@@ -122,12 +66,14 @@
 </template>
 <script>
 import axios from 'axios';
-import AddExistencia from './addExistencia.vue'
 
+import jspdf from "jspdf";
+//import autoTable from 'jspdf-autotable'
+import html2canvas from "html2canvas";
 //import ingresoMedicamento from './ingresoMedicamento.vue'
-import SalidadMedicamentos from './salidadMedicamentos.vue'
+
   export default {
-  components: { /*ingresoMedicamento,*/ SalidadMedicamentos,  AddExistencia },
+  components: { /*ingresoMedicamento,*/   },
     data () {
       return {
         search: '',
@@ -162,6 +108,28 @@ import SalidadMedicamentos from './salidadMedicamentos.vue'
       this.listarMedicamentos()
        },
     methods: {
+        exportPDF() {
+      const doc = new jspdf("p", "pt", "a4");
+      const html = document.getElementById("content");
+      window.html2canvas = html2canvas;
+      //console.log(doc.getFontSize());
+      //console.log(html);
+      //autoTable(doc,{html:'#myTable'})
+
+      doc.setFont("Arimo");
+      //doc.setFontType("normal");
+      doc.setFontSize(-10);
+      doc.html(html, {
+        callback: function (d) {
+          //d.autoPrint();
+          d.save("table.pdf");
+        },
+        autoPaging: "slice",
+        x: 0,
+        y: 0,
+        html2canvas: { scale: 0.6 },
+      });
+    },
       filterOnlyCapsText (value, search) {
         
         return value != null &&
@@ -184,6 +152,8 @@ import SalidadMedicamentos from './salidadMedicamentos.vue'
           console.log(error);
           }
       },
+
+      
 
     },
   }
