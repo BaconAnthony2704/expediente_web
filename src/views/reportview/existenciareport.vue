@@ -39,7 +39,7 @@
     
       </v-col>
     </v-row>
-    <template>
+    <template  >
   <v-card>
     <v-card-title>
       <v-text-field
@@ -50,7 +50,8 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table
+    <v-data-table id="content"
+      
       :headers="headers"
       :items="listadoMedicamentos"
       :search="search"

@@ -40,27 +40,29 @@
     
       </v-col>
     </v-row>
-    <table class="table table-bordered" id="content">
-        <thead>
-          <tr>
-            <th class="text-left">Estado</th>
-            <th class="text-left">Nombre</th>
-            <th class="text-left">Tipo</th>
-            <th class="text-left">Existencia</th>
-            <th class="text-left">Descripcion</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item) in listadoMedicamentos" :key="item">
-            <td>{{ item.idmedicamento }}</td>
-            <td>{{ item.nombre }}</td>
-            <td>{{ item.tipo }}</td>
-            <td>{{ item.existencia }} Unidades</td>
-            <td>{{ item.descripcion }}</td>
-          </tr>
-        </tbody>
-    </table>
+    <template  >
+  <v-card>
+    <v-card-title>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>
+    <v-data-table id="content"
+      
+      :headers="headers"
+      :items="listadoMedicamentos"
+      :search="search"
+    ></v-data-table>
+  </v-card>
+</template>
+</v-container>
   
+
+</template>
 </v-container>
 </template>
 <script>
