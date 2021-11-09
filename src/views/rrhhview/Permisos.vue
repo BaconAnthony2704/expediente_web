@@ -236,7 +236,7 @@ import axios from "axios";
                 idPermiso: x.idPermiso,
                 descripcion: x.descripcion,
                 nombre: x.empleado.nombreEmpleado,
-                fecha: x.fecha,
+                fecha: x.fecha.substring(0,10),
               });
           });
         })
@@ -332,6 +332,8 @@ import axios from "axios";
           this.message="Guardado Correctamente";
           this.vspinner=true;
           console.log(respuesta.status);
+          alert(this.message);
+          location.reload();
           this.save();
         }else{
           this.message="Error vuelva a intentarlo mas tarde";

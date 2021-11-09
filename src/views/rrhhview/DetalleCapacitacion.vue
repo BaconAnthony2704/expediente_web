@@ -9,13 +9,24 @@
       <v-toolbar
         flat
       >
-        <v-toolbar-title>DESCUENTO</v-toolbar-title>
+        <v-toolbar-title>Detalle Capacitacion</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
           vertical
         ></v-divider>
+
+            <v-select v-model="seleccion1" :items="capacitaciones"></v-select>
+
+            <v-btn
+                color="primary"
+                dark
+                @click="ListarDetalleCapacitacion()"
+              >
+                Buscar Capacitacion
+              </v-btn>
         <v-spacer></v-spacer>
+
         <v-dialog
           v-model="dialog"
           max-width="500px"
@@ -27,9 +38,8 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
-              @click="getEmpleados()"
             >
-              Nuevo Descuento
+              Agruegar Empleado
             </v-btn>
           </template>
           <v-card>
@@ -40,27 +50,12 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
-                      v-model="editedItem.descripcion"
-                      label="Descripcion"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.monto"
-                      label="Monto"
-                      type="number"
-                    ></v-text-field>
+                    <v-select v-model="seleccion1" :items="capacitaciones"></v-select>
                   </v-col>
                   <v-col
                     cols="12"
@@ -69,7 +64,6 @@
                   >
                     <v-select v-model="seleccion" :items="empleados"></v-select>
                   </v-col>
-                  
                 </v-row>
               </v-container>
             </v-card-text>
@@ -86,7 +80,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="decision()"
+                @click="CrearDetalleCapacitacion()"
               >
                 Guardar
               </v-btn>
@@ -95,7 +89,7 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">¿Desea Eliminar el Descuento?</v-card-title>
+            <v-card-title class="text-h5">Quieres Eliminar al Empleado de la Capacitacion: {{editedItem.nombreEmpleado}}</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -107,13 +101,6 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
       <v-icon
         small
         @click="deleteItem(item)"
@@ -134,49 +121,47 @@
 
 
 <script>
-import axios from "axios";
+  import axios from "axios";
 
   export default {
     data: () => ({
       dialog: false,
       dialogDelete: false,
-      idDes:'',
+      empleados:[],
       seleccion:'',
+      seleccion1:'',
+      idDes:'',
+      capacitaciones:[],
       headers: [
         {
-          text: 'ID Descuento',
+          text: 'ID Capacitacion',
           align: 'start',
           sortable: false,
-          value: 'idDescuento',
+          value: 'idCapacitacion',
         },
-        { text: 'Descripcion', value: 'descripcion' },
-        { text: 'Monto', value: 'monto' },
-        {text: 'Nombre Empleado', value:'nombre'},
-        { text: 'Fecha', value: 'fecha' },
+        { text: 'id Detalle', value: 'idDetalleCapacitacion' },
+        { text: 'Capacitacion', value: 'descripcion' },
+        { text: 'Empleado', value: 'nombre' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       desserts: [],
-      empleados: [],
       editedIndex: -1,
-      editedItem: {
-        idDescuento:'',
-        descripcion:'',
-        monto:'',
-        nombre:'',
-        fecha:'',
-      },
-      defaultItem: {
-        idDescuento: '',
-        descripcion:'',
-        monto:'',
-        nombre:'',
-        fecha:'',
+      editedItem:{
+        idDetalleCapacitacion:'',
+        idCapacitacion: '',
+        idEmpleado:'',
+      }
+      ,
+      defaultItem:{
+        idDetalleCapacitacion:'',
+        idCapacitacion: '',
+        idEmpleado:'',
       },
     }),
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'Nuevo Descuento' : 'Editar Descuento'
+        return this.editedIndex === -1 ? 'Agregar Empleado' : 'Editar Planilla'
       },
     },
 
@@ -190,55 +175,14 @@ import axios from "axios";
     },
 
     created () {
-      this.initialize();
-      this.getEmpleados();
+        this.getEmpleados()
+        this.getCapacitaciones()
     },
 
     methods: {
-      initialize () {
-        let me = this;
-        var Array = [];
-        
-        axios
-          .get("/api/Empleado/ListarDescuento")
-          .then(function (resp) {
-            Array = resp.data;
-            Array.map(function (x) {
-              me.desserts.push({
-                idDescuento: x.idDescuento,
-                descripcion: x.descripcion,
-                monto: x.monto,
-                nombre: x.empleado.nombreEmpleado,
-                fecha: x.fecha.substring(0,10),
-              });
-          });
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
-         
-      },
-
-      async editItem (item) {
-        //var DocArray=[];
+      
+      editItem (item) {
         this.editedIndex = this.desserts.indexOf(item)
-        this.empleados=[];
-
-      var respuesta = await axios.post("api/Empleado/ListarDescuentoUno",
-          JSON.stringify({
-            idDescuento: item.idDescuento,
-          }),
-          {
-            headers: {
-              // Overwrite Axios's automatically set Content-Type
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        this.empleados.push({ text: respuesta.data.nombreEmpleado, value: respuesta.data.idEmpleado });
-        this.seleccion=respuesta.data.idEmpleado;
-
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -247,16 +191,14 @@ import axios from "axios";
         this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
-        this.idDes=item.idDescuento;
+        this.idDes=item.idDetalleCapacitacion;
       },
 
       async deleteItemConfirm () {
         this.desserts.splice(this.editedIndex, 1)
-        this.editedItem.idDescuento=this.idDes;
-        
-        await axios.post("api/Empleado/deleteDescuento",
+        await axios.post("api/Empleado/deleteDetalleCapacitacion",
           JSON.stringify({
-            idDescuento: this.idDes
+            idDetalleCapacitacion: this.idDes,
           }),
           {
             headers: {
@@ -265,8 +207,7 @@ import axios from "axios";
             },
           }
         );
-
-        this.closeDelete();
+        this.closeDelete()
       },
 
       close () {
@@ -284,15 +225,14 @@ import axios from "axios";
           this.editedIndex = -1
         })
       },
-      async guardarDescuento(){
+      async CrearDetalleCapacitacion(){
         this.vdialog=true;
           
-          var respuesta = await axios.post("api/Empleado/CrearDescuento",
+          var respuesta = await axios.post("api/Empleado/CrearDetalleCapacitacion",
           JSON.stringify({
-            idDescuento: 0,
-            descripcion: this.editedItem.descripcion,
-            monto: parseFloat(this.editedItem.monto),
-            idEmpleado: parseInt(this.seleccion),
+            idDetalleCapacitacion:0,
+            idCapacitacion:this.seleccion1,
+            idEmpleado:this.seleccion,
           }),
           {
             headers: {
@@ -306,24 +246,23 @@ import axios from "axios";
         if(respuesta.status==200){
           this.message="Guardado Correctamente";
           this.vspinner=true;
-          console.log(respuesta.status);
           alert(this.message);
           location.reload();
-          this.save();
         }else{
           this.message="Error vuelva a intentarlo mas tarde";
           this.vspinner=true;
-        }      
+        }
       },
-      async editarDescuento(){
-        this.vdialog=true;
-          
-          var respuesta = await axios.put("api/Empleado/editarDescuento",
+      async ListarDetalleCapacitacion() {
+        let me = this;
+        var Array = [];
+        this.desserts=[];
+        
+         axios.post("/api/Empleado/ListarDetalleCapacitacion",
           JSON.stringify({
-            idDescuento: this.editedItem.idDescuento,
-            descripcion: this.editedItem.descripcion,
-            monto: parseFloat(this.editedItem.monto),
-            idEmpleado: parseInt(this.seleccion),
+            idDetalleCapacitacion:0,
+            idCapacitacion:this.seleccion1,
+            idEmpleado:0,
           }),
           {
             headers: {
@@ -331,20 +270,23 @@ import axios from "axios";
               "Content-Type": "application/json",
             },
           }
-        );
+        ).then(function (resp) {
+            Array = resp.data;
+            Array.map(function (x) {
+              me.desserts.push({
+                idCapacitacion:x.idCapacitacion,
+                idDetalleCapacitacion: x.idDetalleCapacitacion,
+                descripcion:x.capacitacion.descripcion,
+                nombre:x.empleado.nombreEmpleado,
 
-        this.vdialog = false;
-        if(respuesta.status==200){
-          this.message="Guardado Correctamente";
-          this.vspinner=true;
-          console.log(respuesta.status);
-          this.save();
-        }else{
-          this.message="Error vuelva a intentarlo mas tarde";
-          this.vspinner=true;
-        }      
+              });
+          });
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
       },
-      getEmpleados() {
+    getEmpleados() {
       let me = this;
       var DocArray = [];
       this.empleados=[];
@@ -361,14 +303,24 @@ import axios from "axios";
           console.log(err);
         });
     },
-    decision(){
-        if(this.formTitle=="Editar Descuento"){
-          console.log("Casi papu");
-          this.editarDescuento();
-        }else{
-          this.guardarDescuento();
-        }
-      },
+    getCapacitaciones() {
+      let me = this;
+      var DocArray = [];
+      this.capacitaciones=[];
+      this.seleccion1=[];
+      axios
+        .get("api/Empleado/ListarCapacitacion")
+        .then(function (resp) {
+          DocArray = resp.data;
+          DocArray.map(function (x) {
+            me.capacitaciones.push({ text: x.descripcion, value: x.idCapacitacion });
+          });
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
+
       save () {
         if (this.editedIndex > -1) {
           Object.assign(this.desserts[this.editedIndex], this.editedItem)

@@ -9,7 +9,7 @@
       <v-toolbar
         flat
       >
-        <v-toolbar-title>EMPLEADO</v-toolbar-title>
+        <v-toolbar-title>PLANILLA</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset

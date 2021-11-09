@@ -25,6 +25,7 @@ import Permisos from "../views/rrhhview/Permisos.vue"
 import Sancion from "../views/rrhhview/Sancion.vue"
 import planilla from "../views/rrhhview/planilla.vue"
 import ExportarCuentas from "../views/MenuExportar.vue"
+import DetalleCapacitacion from "../views/rrhhview/DetalleCapacitacion.vue"
 import md5 from "js-md5"
 
 
@@ -169,6 +170,11 @@ const routes = [
     path:"/planilla",
     name:"planilla",
     component: planilla
+  },
+  {
+    path:"/detalleCapacitacion",
+    name:"detalleCapacitacion",
+    component: DetalleCapacitacion
   },
   
 ];

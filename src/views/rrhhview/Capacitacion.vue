@@ -16,6 +16,15 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
+        <v-btn
+              color="Error"
+              dark
+              class="mb-2"
+              :to="{ name: 'detalleCapacitacion' }"
+            >
+              Agruegar Empleado
+            </v-btn>
+        <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
           max-width="500px"
@@ -45,16 +54,6 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.idCapacitacion"
-                      label="ID Capacitacion"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
                       v-model="editedItem.descripcion"
                       label="Descripcion"
                     ></v-text-field>
@@ -78,7 +77,7 @@
                     <v-dialog
                     ref="dialog"
                     v-model="modal"
-                    :return-value.sync="date"
+                    :return-value.sync="editedItem.fecha"
                     persistent
                     width="290px"
                   >
@@ -93,7 +92,7 @@
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                      v-model="date"
+                      v-model="editedItem.fecha"
                       type="date"
                       scrollable
                     >
@@ -108,7 +107,7 @@
                       <v-btn
                         text
                         color="primary"
-                        @click="$refs.dialog.save(date)"
+                        @click="$refs.dialog.save(editedItem.fecha)"
                       >
                         OK
                       </v-btn>
@@ -132,7 +131,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="save"
+                @click="decision()"
               >
                 Guardar
               </v-btn>
@@ -141,7 +140,7 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">¿Quieres Eliminar Capacitacion?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -180,11 +179,13 @@
 
 
 <script>
+import axios from "axios";
   export default {
     data: () => ({
       dialog: false,
       modal: false,
       dialogDelete: false,
+      idDes:'',
       headers: [
         {
           text: 'ID Capacitacion',
@@ -215,7 +216,7 @@
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'Nueva Capacitacion' : 'Nueva Capacitacion'
+        return this.editedIndex === -1 ? 'Nueva Capacitacion' : 'Editar Capacitacion'
       },
     },
 
@@ -234,39 +235,26 @@
 
     methods: {
       initialize () {
-        this.desserts = [
-          {
-            idCapacitacion: 'Frozen Yogurt',
-            descripcion: 159,
-            monto: 6.0,
-            fecha: 24,
-          },
-          {
-            idCapacitacion: 'Ice cream sandwich',
-            descripcion: 237,
-            monto: 9.0,
-            fecha: 37,
-          },
-          {
-            idCapacitacion: 'Eclair',
-            descripcion: 262,
-            monto: 16.0,
-            fecha: 23,
-          },
-          {
-            idCapacitacion: 'Cupcake',
-            descripcion: 305,
-            monto: 3.7,
-            fecha: 67,
-          },
-          {
-            idCapacitacion: 'Gingerbread',
-            descripcion: 356,
-            monto: 16.0,
-            fecha: 49,
-          },
-          
-        ]
+        let me = this;
+        var Array = [];
+        
+        axios
+          .get("/api/Empleado/ListarCapacitacion")
+          .then(function (resp) {
+            Array = resp.data;
+            Array.map(function (x) {
+              me.desserts.push({
+                idCapacitacion: x.idCapacitacion,
+                descripcion: x.descripcion,
+                monto: x.monto,
+                fecha: x.fecha.substring(0,10),
+              });
+          });
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+        console.log(this.desserts)
       },
 
       editItem (item) {
@@ -279,10 +267,24 @@
         this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
+        this.idDes=item.idCapacitacion;
       },
 
-      deleteItemConfirm () {
+      async deleteItemConfirm () {
         this.desserts.splice(this.editedIndex, 1)
+
+        await axios.post("api/Empleado/deleteCapacitacion",
+          JSON.stringify({
+            idCapacitacion: this.idDes,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         this.closeDelete()
       },
 
@@ -301,6 +303,75 @@
           this.editedIndex = -1
         })
       },
+      async guardarCapacitacion(){
+        this.vdialog=true;
+          
+          var respuesta = await axios.post("api/Empleado/CrearCapacitacion",
+          JSON.stringify({
+            idCapacitacion: 0,
+            descripcion: this.editedItem.descripcion,
+            monto: parseFloat(this.editedItem.monto),
+            fecha: this.editedItem.fecha,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          alert(this.message);
+          this.vspinner=true;
+          console.log(respuesta.status);
+          location.reload();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }      
+      },
+      async editarCapacitacion(){
+        this.vdialog=true;
+          
+          var respuesta = await axios.put("api/Empleado/editarCapacitacion",
+          JSON.stringify({
+            idCapacitacion: this.editedItem.idCapacitacion,
+            descripcion: this.editedItem.descripcion,
+            monto: parseFloat(this.editedItem.monto),
+            fecha: this.editedItem.fecha,
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        this.vdialog = false;
+        if(respuesta.status==200){
+          this.message="Guardado Correctamente";
+          this.vspinner=true;
+          console.log(respuesta.status);
+          location.reload();
+          this.save();
+        }else{
+          this.message="Error vuelva a intentarlo mas tarde";
+          this.vspinner=true;
+        }      
+      },
+    decision(){
+        if(this.formTitle=="Editar Capacitacion"){
+          console.log("Casi papu");
+          this.editarCapacitacion();
+        }else{
+          this.guardarCapacitacion();
+        }
+      },
+
 
       save () {
         if (this.editedIndex > -1) {

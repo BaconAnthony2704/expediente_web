@@ -173,6 +173,7 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      idDes:'',
       headers: [
         {
           text: 'ID Empleado',
@@ -231,8 +232,8 @@
                 dui: x.dui,
                 nit: x.nit,
                 nombreEmpleado: x.nombreEmpleado,
-                fechaIngreso: x.fechaIngreso,
-                fechaSalida: x.fechaSalida,
+                fechaIngreso: x.fechaIngreso.substring(0,10),
+                fechaSalida: x.fechaSalida.substring(0,10),
                 titulo: x.titulo,
                 cargo: x.cargo,
                 sueldo: x.sueldo,
@@ -254,10 +255,24 @@
         this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
+        this.idDes=item.idEmpleado;
       },
 
-      deleteItemConfirm () {
+      async deleteItemConfirm () {
         this.desserts.splice(this.editedIndex, 1)
+
+        await axios.post("api/Empleado/deleteEmpleado",
+          JSON.stringify({
+            idEmpleado: this.idDes
+          }),
+          {
+            headers: {
+              // Overwrite Axios's automatically set Content-Type
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         this.closeDelete()
       },
 
@@ -297,7 +312,8 @@
         if(respuesta.status==200){
           this.message="Guardado Correctamente";
           this.vspinner=true;
-          this.save();
+          alert(this.message);
+          location.reload();
         }else{
           this.message="Error vuelva a intentarlo mas tarde";
           this.vspinner=true;
@@ -324,7 +340,7 @@
         if(respuesta.status==200){
           this.message="Editado Correctamente";
           this.vspinner=true;
-          this.editItem();
+          this.save();
         }else{
           this.message="Error vuelva a intentarlo mas tarde";
           this.vspinner=true;
