@@ -106,7 +106,7 @@
                     md="4"
                   >
                     <v-text-field
-                        type="number"
+                        
                       v-model="editedItem.cantidad"
                       label="cantidad"
                     ></v-text-field>
@@ -197,8 +197,8 @@ import axios from 'axios';
           value: 'idMedicamento',
         },
         { text: 'nombre', value: 'nombre' },
-        { text: 'Cantidad', value: 'cantidad' },
         { text: 'existencia', value: 'existencia' },
+        { text: 'cantidad', value: 'cantidad' },
         
         { text: 'Actions', value: 'actions', sortable: false },
       ],
@@ -274,6 +274,7 @@ import axios from 'axios';
 
           })
           */
+          console.log(this.listadoMedicamentos[0]);
           
           let response = await axios.post("api/salidadexistencias",this.listadoMedicamentos);
 //          this.listadoMedicamentos.forEach(element => {
@@ -286,7 +287,7 @@ import axios from 'axios';
         
          
         alert("exito");
-        console.log(this.listadoMedicamentos[1]);
+        //console.log(this.listadoMedicamentos[1]);
           
       } catch (error) {
           console.log(error);
@@ -379,12 +380,12 @@ import axios from 'axios';
         if (this.editedIndex > -1) {
           //editando los items
         // this.editedItem.existencia= parseInt(this.editedItem.existencia);
-          
-          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
-          this.editedItem.cantidad= parseInt(this.editedItem.cantidad);
-         
           this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
          this.editedItem.existencia=parseInt(this.editedItem.existencia); 
+         this.editedItem.cantidad=parseInt(this.editedItem.cantidad); 
+          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+          
+         
          
         } else {
          this.editedItem.existencia=parseInt(this.editedItem.existencia);

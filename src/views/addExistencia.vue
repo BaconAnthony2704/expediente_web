@@ -358,12 +358,12 @@ import axios from 'axios';
         if (this.editedIndex > -1) {
           //editando los items
         // this.editedItem.existencia= parseInt(this.editedItem.existencia);
-          
-          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
           this.editedItem.cantidad= parseInt(this.editedItem.cantidad);
          
           this.editedItem.idMedicamento=parseInt(this.editedItem.idMedicamento);
-         this.editedItem.existencia=parseInt(this.editedItem.existencia); 
+         this.editedItem.existencia=parseInt(this.editedItem.existencia);
+          Object.assign(this.listadoMedicamentos[this.editedIndex], this.editedItem)
+           
          
         } else {
          this.editedItem.existencia=parseInt(this.editedItem.existencia);

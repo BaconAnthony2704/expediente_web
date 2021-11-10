@@ -117,7 +117,7 @@ export default {
         text: "Codigo",
         align: "start",
         sortable: false,
-        value: "estado",
+        value: "idmedicamento",
       },
       { text: "Nombre", value: "nombre" },
       { text: "Tipo", value: "tipo" },

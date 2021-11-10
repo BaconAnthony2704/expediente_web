@@ -18,7 +18,7 @@
                     <v-spacer></v-spacer>
 
                     <v-btn width="200px" :to="{ name: 'medicamentoreport' }">
-                        Medicamento
+                        Inventario
                     </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -60,7 +60,7 @@
                     <v-spacer></v-spacer>
 
                     <v-btn width="200px" :to="{ name: 'existenciareport' }">
-                        Inventario
+                        Kardex
                     </v-btn>
                     </v-card-actions>
                 </v-card>
